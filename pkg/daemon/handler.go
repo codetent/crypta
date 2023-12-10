@@ -9,14 +9,15 @@ import (
 	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
 )
 
-var secrets map[string]string = map[string]string{}
-
 type secretServiceServer struct {
 	secretv1connect.UnimplementedSecretServiceHandler
+	store *SecretStore
 }
 
 func NewSecretServiceHandler() (string, http.Handler) {
-	return secretv1connect.NewSecretServiceHandler(&secretServiceServer{})
+	return secretv1connect.NewSecretServiceHandler(&secretServiceServer{
+		store: NewSecretStore(),
+	})
 }
 
 func (s *secretServiceServer) SetSecret(
@@ -25,7 +26,9 @@ func (s *secretServiceServer) SetSecret(
 ) (*connect.Response[secretv1.SetSecretResponse], error) {
 	name := req.Msg.GetName()
 	value := req.Msg.GetValue()
-	secrets[name] = value
+
+	s.store.SetSecret(name, value)
+
 	return connect.NewResponse(&secretv1.SetSecretResponse{}), nil
 }
 
@@ -34,7 +37,9 @@ func (s *secretServiceServer) GetSecret(
 	req *connect.Request[secretv1.GetSecretRequest],
 ) (*connect.Response[secretv1.GetSecretResponse], error) {
 	name := req.Msg.GetName()
-	value, exists := secrets[name]
+
+	value, exists := s.store.GetSecret(name)
+
 	return connect.NewResponse(&secretv1.GetSecretResponse{
 		Value:  value,
 		Exists: exists,
