@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
-	secretv1 "github.com/codetent/crypta/gen/proto/secret/v1"
-	"github.com/codetent/crypta/gen/proto/secret/v1/secretv1connect"
+	secretv1 "github.com/codetent/crypta/gen/secret/v1"
+	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
 )
 
 type daemonClient struct {

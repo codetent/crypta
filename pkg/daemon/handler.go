@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	connect "connectrpc.com/connect"
-	secretv1 "github.com/codetent/crypta/gen/proto/secret/v1"
-	"github.com/codetent/crypta/gen/proto/secret/v1/secretv1connect"
+	secretv1 "github.com/codetent/crypta/gen/secret/v1"
+	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
 )
 
 var secrets map[string]string = map[string]string{}
