@@ -1,0 +1,7 @@
+with-expecter: true
+packages:
+    github.com/codetent/crypta/gen/secret/v1/secretv1connect:
+        config:
+        interfaces:
+            SecretServiceClient:
+                config:
