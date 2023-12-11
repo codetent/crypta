@@ -46,7 +46,6 @@ func (c *setCmd) Run(args []string) error {
 			} else {
 				value, err = cli.AskInput(os.Stdin, os.Stderr, prompt)
 			}
-
 			if err != nil {
 				return err
 			}

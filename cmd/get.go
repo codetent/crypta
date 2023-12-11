@@ -21,7 +21,7 @@ func NewGetCmd(global *globalFlags) *cobra.Command {
 	c := &getCmd{global: global}
 	cc := &cobra.Command{
 		Use:   "get",
-		Short: "Get secret value",
+		Short: "Get cached secret value",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return c.Run(args)
@@ -48,12 +48,14 @@ func (c *getCmd) Run(args []string) error {
 			} else {
 				value, err = cli.AskInput(os.Stdin, os.Stderr, prompt)
 			}
-
 			if err != nil {
 				return err
 			}
 
-			client.SetSecret(context.Background(), name, value)
+			err = client.SetSecret(context.Background(), name, value)
+			if err != nil {
+				return err
+			}
 		} else {
 			return err
 		}
