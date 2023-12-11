@@ -42,9 +42,9 @@ func (c *setCmd) Run(args []string) error {
 
 			var err error
 			if c.hidden {
-				value, err = cli.AskPassword(os.Stdin, os.Stdout, prompt)
+				value, err = cli.AskPassword(os.Stdin, os.Stderr, prompt)
 			} else {
-				value, err = cli.AskInput(os.Stdin, os.Stdout, prompt)
+				value, err = cli.AskInput(os.Stdin, os.Stderr, prompt)
 			}
 
 			if err != nil {

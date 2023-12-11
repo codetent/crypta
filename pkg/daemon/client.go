@@ -2,12 +2,17 @@ package daemon
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
 	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
+)
+
+var (
+	ErrSecretNotExists = errors.New("secret does not exist")
 )
 
 type daemonClient struct {
@@ -46,7 +51,7 @@ func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, erro
 	}
 
 	if !res.Msg.Exists {
-		return "", fmt.Errorf("secret %s does not exist", name)
+		return "", ErrSecretNotExists
 	}
 
 	return res.Msg.Value, nil
