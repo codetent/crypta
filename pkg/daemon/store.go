@@ -1,20 +1,25 @@
 package daemon
 
-type SecretStore struct {
+type SecretStore interface {
+	SetSecret(string, string)
+	GetSecret(string) (string, bool)
+}
+
+type LocalSecretStore struct {
 	secrets map[string]string
 }
 
-func NewSecretStore() *SecretStore {
-	return &SecretStore{
+func NewLocalSecretStore() SecretStore {
+	return &LocalSecretStore{
 		secrets: map[string]string{},
 	}
 }
 
-func (s *SecretStore) SetSecret(name string, value string) {
+func (s *LocalSecretStore) SetSecret(name string, value string) {
 	s.secrets[name] = value
 }
 
-func (s *SecretStore) GetSecret(name string) (string, bool) {
+func (s *LocalSecretStore) GetSecret(name string) (string, bool) {
 	value, exists := s.secrets[name]
 	return value, exists
 }

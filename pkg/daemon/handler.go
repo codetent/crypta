@@ -11,12 +11,12 @@ import (
 
 type secretServiceServer struct {
 	secretv1connect.UnimplementedSecretServiceHandler
-	store *SecretStore
+	store SecretStore
 }
 
 func NewSecretServiceHandler() (string, http.Handler) {
 	return secretv1connect.NewSecretServiceHandler(&secretServiceServer{
-		store: NewSecretStore(),
+		store: NewLocalSecretStore(),
 	})
 }
 

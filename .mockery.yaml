@@ -1,7 +1,12 @@
 with-expecter: true
 packages:
-    github.com/codetent/crypta/gen/secret/v1/secretv1connect:
+  github.com/codetent/crypta/gen/secret/v1/secretv1connect:
+    config:
+    interfaces:
+      SecretServiceClient:
         config:
-        interfaces:
-            SecretServiceClient:
-                config:
+  github.com/codetent/crypta/pkg/daemon:
+    config:
+    interfaces:
+      SecretStore:
+        config:

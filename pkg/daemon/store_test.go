@@ -37,7 +37,7 @@ func TestSecretStore_SetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &SecretStore{
+			s := &LocalSecretStore{
 				secrets: tt.fields.secrets,
 			}
 			s.SetSecret(tt.args.name, tt.args.value)
@@ -90,7 +90,7 @@ func TestSecretStore_GetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &SecretStore{
+			s := &LocalSecretStore{
 				secrets: tt.fields.secrets,
 			}
 			got, gotExists := s.GetSecret(tt.args.name)
@@ -107,18 +107,18 @@ func TestSecretStore_GetSecret(t *testing.T) {
 func TestNewSecretStore(t *testing.T) {
 	tests := []struct {
 		name string
-		want *SecretStore
+		want SecretStore
 	}{
 		{
 			name: "Create empty secret store",
-			want: &SecretStore{
+			want: &LocalSecretStore{
 				secrets: map[string]string{},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSecretStore(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewLocalSecretStore(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewSecretStore() = %v, want %v", got, tt.want)
 			}
 		})
