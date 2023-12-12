@@ -22,6 +22,10 @@ Especially if you run the environment locally or even in the cloud without using
 
 This is where crypta steps in: it is simply called in your build scripts when you need credentials to authenticate. If credentials are already cached, it will provide them. Otherwise, it will ask for them and cache them afterwards.
 
+## Documentation
+
+- CLI reference: [docs/pages](docs/pages/crypta.md)
+
 ## Installation
 
 You will find the latest release of crypta in GitHub Releases section.
