@@ -22,4 +22,4 @@ jobs:
         go-version: '1.21'
     - uses: goreleaser/goreleaser-action@v2
       with:
-        args: --clean --skip=validate --skip=publish --skip=announce
+        args: --clean --snapshot
