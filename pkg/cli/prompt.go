@@ -32,13 +32,13 @@ func AskPassword(f *os.File, w io.Writer, prompt string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer term.Restore(fd, oldState)
+	defer func() { _ = term.Restore(fd, oldState) }()
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
 	go func() {
 		for range sigCh {
-			term.Restore(fd, oldState)
+			_ = term.Restore(fd, oldState)
 			os.Exit(1)
 		}
 	}()
