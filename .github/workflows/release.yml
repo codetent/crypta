@@ -1,0 +1,23 @@
+# This workflow will release the component
+
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'CHANGELOG.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: codetent/crypta-dev:1.0
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - run: |
+        export GORELEASER_CURRENT_TAG=`changie latest`
+        export GORELEASER_SKIP_CHANGELOG="false"
+        goreleaser --clean --skip=validate --release-notes=.changes/$GORELEASER_CURRENT_TAG.md"
