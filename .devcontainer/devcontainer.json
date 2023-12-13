@@ -1,7 +1,4 @@
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		"context": "..",
-		"dockerfile": "../docker/Dockerfile"
-	}
+	"name": "crypta-dev",
+	"image": "docker.io/codetent/crypta-dev:1.0"
 }
