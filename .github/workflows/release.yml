@@ -1,5 +1,3 @@
-# This workflow will release the component
-
 name: Release the component
 
 on:
