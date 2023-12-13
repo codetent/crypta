@@ -1,6 +1,6 @@
 # This workflow will release the component
 
-name: build
+name: release
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - 'CHANGELOG.md'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     container: codetent/crypta-dev:1.0
     steps:
