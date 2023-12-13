@@ -20,4 +20,6 @@ jobs:
         echo GORELEASER_CURRENT_TAG=$(changie latest) >> $GITHUB_ENV
         echo RELEASE_NOTES_PATH=.changes/$(changie latest).md >> $GITHUB_ENV
     - name: Create release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: goreleaser --clean --skip=validate --release-notes=$RELEASE_NOTES_PATH
