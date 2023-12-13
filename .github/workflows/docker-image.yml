@@ -1,0 +1,28 @@
+name: Build and publish docker image
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'docker/Dockerfile
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Build Docker image 
+      uses: docker/build-push-action@v4
+      with:
+        context: docker
+        dockerfile: docker/Dockerfile
+        push: true
+        tags: codetent/crypta-dev:${{ github.sha }}
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
