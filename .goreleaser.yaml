@@ -18,7 +18,7 @@ builds:
       - linux
       - windows
       - darwin
-  - goarch:
+    goarch:
       - amd64
 
 archives:
