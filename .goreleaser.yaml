@@ -36,9 +36,4 @@ archives:
         format: zip
 
 checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: '{{ .Version }}'
-changelog:
-  skip: '{{ .Env.GORELEASER_SKIP_CHANGELOG }}'
-  
+  name_template: 'checksums.txt'  
