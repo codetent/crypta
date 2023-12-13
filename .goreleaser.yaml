@@ -12,6 +12,7 @@ before:
   hooks:
     - buf lint
     - go test ./...
+    - golangci-lint run --timeout 2m
 
 builds:
   - goos:
@@ -22,7 +23,7 @@ builds:
       - amd64
     flags:
       - -buildvcs=false
-    
+
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of `uname`.
