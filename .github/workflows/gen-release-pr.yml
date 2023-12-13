@@ -1,0 +1,24 @@
+name: Generate release pull request
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-pr:
+    runs-on: ubuntu-latest
+    container: codetent/crypta-dev:1.0
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Batch and merge
+      run: |
+        changie batch auto
+        changie merge
+        echo RELEASE_VERSION=$(changie latest) >> $GITHUB_ENV
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: Release ${{ env.RELEASE_VERSION }}
+        branch: release/${{ env.RELEASE_VERSION }}
+        commit-message: Release ${{ env.RELEASE_VERSION }}
