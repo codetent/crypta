@@ -1,7 +1,9 @@
 name: Build and publish docker image
 
 on:
-  pull_request:
+  pull_request:    
+    paths:
+      - 'docker/Dockerfile'
   push:
     branches: [ "main" ]
     paths:
