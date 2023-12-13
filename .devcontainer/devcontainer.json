@@ -1,4 +1,12 @@
 {
 	"name": "crypta-dev",
-	"image": "docker.io/codetent/crypta-dev:1.0"
+	"image": "docker.io/codetent/crypta-dev:1.0",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.go",
+				"usernamehw.errorlens"
+			]
+		}
+	}
 }
