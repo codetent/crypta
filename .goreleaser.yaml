@@ -8,6 +8,9 @@
 
 version: 1
 
+env:
+  - GOFLAGS=-buildvcs=false
+
 before:
   hooks:
     - buf lint
@@ -21,8 +24,6 @@ builds:
       - darwin
     goarch:
       - amd64
-    flags:
-      - -buildvcs=false
 
 archives:
   - format: tar.gz
