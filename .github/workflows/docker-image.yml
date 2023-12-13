@@ -25,5 +25,3 @@ jobs:
         dockerfile: docker/Dockerfile
         push: true
         tags: codetent/crypta-dev:${{ github.sha }}
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PASS }}
