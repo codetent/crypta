@@ -5,4 +5,5 @@ RUN GO111MODULE=on GOBIN=/usr/local/bin \
     go install github.com/goreleaser/goreleaser@v1.22.1 && \
     go install github.com/vektra/mockery/v2@v2.38.0 && \
     go install github.com/miniscruff/changie@v1.16.1 && \
-    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2 && \
+    go install github.com/onsi/ginkgo/v2/ginkgo@v2.13.2
