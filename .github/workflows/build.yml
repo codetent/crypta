@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: codetent/crypta-dev:1.0
+    container: codetent/crypta-dev:e88d3dcd9dfbad063168b987a345a2fbde4b500c
     steps:
     - uses: actions/checkout@v3
       with:
