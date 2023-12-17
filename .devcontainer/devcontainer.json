@@ -1,6 +1,9 @@
 {
 	"name": "crypta-dev",
-	"image": "docker.io/codetent/crypta-dev:1.0",
+	"build": {
+		"dockerfile": "../docker/Dockerfile",
+		"context": ".."
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
