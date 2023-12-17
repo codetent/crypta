@@ -7,7 +7,7 @@ import (
 
 func main() {
 	cmd := cmd.NewRootCmd()
-	err := doc.GenMarkdownTree(cmd, "docs/pages")
+	err := doc.GenMarkdownTree(cmd, "docs/pages/cli")
 	if err != nil {
 		panic(err)
 	}
