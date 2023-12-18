@@ -2,42 +2,40 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import {FeatureItem, FeatureCard} from '@site/src/components/HomepageFeatures';
+import {FeatureItem, FeatureCard} from '@site/src/components/FeatureCard';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 
 const FeatureList: FeatureItem[] = [
-  // {
-  //   title: 'Easy to Use',
-  //   Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-  //   description: (
-  //     <>
-  //       Docusaurus was designed from the ground up to be easily installed and
-  //       used to get your website up and running quickly.
-  //     </>
-  //   ),
-  // },
-  // {
-  //   title: 'Focus on What Matters',
-  //   Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-  //   description: (
-  //     <>
-  //       Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-  //       ahead and move your docs into the <code>docs</code> directory.
-  //     </>
-  //   ),
-  // },
-  // {
-  //   title: 'Powered by React',
-  //   Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-  //   description: (
-  //     <>
-  //       Extend or customize your website layout by reusing React. Docusaurus can
-  //       be extended while reusing the same header and footer.
-  //     </>
-  //   ),
-  // },
+  {
+    title: 'Securely cached',
+    Svg: require('@site/static/img/shield.svg').default,
+    description: (
+      <>
+        Crypta stores your secrets securely in your development environment without others being able to access them.
+      </>
+    ),
+  },
+  {
+    title: 'Works locally',
+    Svg: require('@site/static/img/dolly.svg').default,
+    description: (
+      <>
+        Crypta does not require any external requirements. It is just a single binary running completely local.
+      </>
+    ),
+  },
+  {
+    title: 'Easy integrable',
+    Svg: require('@site/static/img/plug.svg').default,
+    description: (
+      <>
+        Crypta can be integrated easily in scripts but is also compatible with CI/CD workflows as well as other secret
+        providers.
+      </>
+    ),
+  },
 ];
 
 function HomepageHeader() {
@@ -52,8 +50,8 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Getting started
+            to="/pages/category/getting-started">
+            Getting Started
           </Link>
         </div>
       </div>

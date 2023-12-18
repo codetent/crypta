@@ -34,6 +34,8 @@ const config: Config = {
       'classic',
       {
         docs: {
+          path: 'pages',
+          routeBasePath: 'pages',
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -65,6 +67,11 @@ const config: Config = {
       },
       items: [
         {
+          href: '/pages/intro',
+          label: 'Docs',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/codetent/crypta',
           label: 'GitHub',
           position: 'right',
@@ -73,26 +80,7 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Reference',
-              to: '/pages/cli/crypta',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/codetent/crypta',
-            },
-          ],
-        },
-      ],
+      links: [],
       copyright: `Copyright © ${new Date().getFullYear()} codetent`,
     },
     prism: {
