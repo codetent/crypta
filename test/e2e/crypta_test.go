@@ -8,36 +8,36 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gbytes"
-	. "github.com/onsi/gomega/gexec"
+	"github.com/onsi/gomega/gexec"
 )
 
 func initDaemon() {
 	BeforeAll(func() {
 		command := exec.Command(pathToCrypta, "daemon")
-		daemon, err := Start(command, GinkgoWriter, GinkgoWriter)
+		daemon, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 		Ω(err).ShouldNot(HaveOccurred())
-		Ω(daemon).ShouldNot(Exit(0))
+		Ω(daemon).ShouldNot(gexec.Exit(0))
 	})
 
 	AfterAll(func() {
-		KillAndWait()
+		gexec.KillAndWait()
 	})
 }
 
 func setValue(key, val string) {
 	cmd := exec.Command(pathToCrypta, "set", key, val)
-	crypta, err := Start(cmd, GinkgoWriter, GinkgoWriter)
+	crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Ω(err).ShouldNot(HaveOccurred())
 
-	Eventually(crypta).Should(Exit(0))
+	Eventually(crypta).Should(gexec.Exit(0))
 }
 
 func getValue(key string) string {
 	cmd := exec.Command(pathToCrypta, "get", key)
-	crypta, err := Start(cmd, GinkgoWriter, GinkgoWriter)
+	crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Ω(err).ShouldNot(HaveOccurred())
 
-	Eventually(crypta).Should(Exit(0))
+	Eventually(crypta).Should(gexec.Exit(0))
 
 	return string(crypta.Out.Contents())
 }
@@ -62,7 +62,7 @@ var _ = Describe("Crypta", func() {
 			cmd := exec.Command(pathToCrypta, "set", key)
 			stdin, err := cmd.StdinPipe()
 			Ω(err).ShouldNot(HaveOccurred())
-			crypta, err := Start(cmd, GinkgoWriter, GinkgoWriter)
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
 			Eventually(crypta.Err).Should(Say(fmt.Sprintf("Value for %s:", key)))
@@ -72,7 +72,7 @@ var _ = Describe("Crypta", func() {
 			err = stdin.Close()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Eventually(crypta).Should(Exit(0))
+			Eventually(crypta).Should(gexec.Exit(0))
 		})
 
 		It("retrieves the previously written value", func() {
@@ -101,7 +101,7 @@ var _ = Describe("Crypta", func() {
 	})
 
 	Describe("Setting a new value if it is not available yet", Ordered, func() {
-		var crypta *Session
+		var crypta *gexec.Session
 		var stdin io.WriteCloser
 
 		val := "xyz"
@@ -113,12 +113,12 @@ var _ = Describe("Crypta", func() {
 			var err error
 			stdin, err = cmd.StdinPipe()
 			Ω(err).ShouldNot(HaveOccurred())
-			crypta, err = Start(cmd, GinkgoWriter, GinkgoWriter)
+			crypta, err = gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 		})
 
 		AfterEach(func() {
-			Eventually(crypta).Should(Exit(0))
+			Eventually(crypta).Should(gexec.Exit(0))
 		})
 
 		Context("When no value is set yet", func() {
@@ -130,7 +130,7 @@ var _ = Describe("Crypta", func() {
 				err = stdin.Close()
 				Ω(err).ShouldNot(HaveOccurred())
 
-				Eventually(crypta).Should(Exit(0))
+				Eventually(crypta).Should(gexec.Exit(0))
 			})
 		})
 
@@ -144,17 +144,17 @@ var _ = Describe("Crypta", func() {
 	It("should return an error if the daemon is not running when", func() {
 		By("trying to retrieve a value", func() {
 			cmd := exec.Command(pathToCrypta, "get", "abcd")
-			crypta, err := Start(cmd, GinkgoWriter, GinkgoWriter)
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Eventually(crypta).Should(Exit(1))
+			Eventually(crypta).Should(gexec.Exit(1))
 		})
 		By("trying to set a value", func() {
 			cmd := exec.Command(pathToCrypta, "set", "abcd", "xyz")
-			crypta, err := Start(cmd, GinkgoWriter, GinkgoWriter)
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Eventually(crypta).Should(Exit(1))
+			Eventually(crypta).Should(gexec.Exit(1))
 		})
 	})
 })

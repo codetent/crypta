@@ -5,7 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/gomega/gexec"
+	"github.com/onsi/gomega/gexec"
 )
 
 var pathToCrypta string
@@ -13,12 +13,12 @@ var pathToCrypta string
 func TestCrypta(t *testing.T) {
 	BeforeSuite(func() {
 		var err error
-		pathToCrypta, err = Build("github.com/codetent/crypta")
+		pathToCrypta, err = gexec.Build("github.com/codetent/crypta")
 		Ω(err).ShouldNot(HaveOccurred())
 	})
 
 	AfterSuite(func() {
-		CleanupBuildArtifacts()
+		gexec.CleanupBuildArtifacts()
 	})
 
 	RegisterFailHandler(Fail)
