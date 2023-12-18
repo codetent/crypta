@@ -14,7 +14,7 @@ env:
 before:
   hooks:
     - buf lint
-    - go test ./...
+    - ginkgo ./...
     - golangci-lint run --timeout 2m
 
 builds:
