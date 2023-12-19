@@ -1,6 +1,6 @@
 <div align="center">
   <br>
-  <img src="docs/logo.svg" width="100" /><br>
+  <img src="docs/static/img/logo.svg" width="100" /><br>
   
   # Crypta
   
