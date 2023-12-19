@@ -9,30 +9,29 @@ import styles from './index.module.css';
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Securely cached',
-    Svg: require('@site/static/img/shield.svg').default,
+    title: 'Simple',
+    Svg: require('@site/static/img/check.svg').default,
     description: (
       <>
-        Crypta stores your secrets securely in your development environment without others being able to access them.
+        Crypta provides your developer credentials to your build environment as simple as it should be.
       </>
     ),
   },
   {
-    title: 'Works locally',
+    title: 'Local',
     Svg: require('@site/static/img/dolly.svg').default,
     description: (
       <>
-        Crypta does not require any external requirements. It is just a single binary running completely local.
+        Crypta runs fully local without requiring any additional requirements or services.
       </>
     ),
   },
   {
-    title: 'Easy integrable',
+    title: 'Compatible',
     Svg: require('@site/static/img/plug.svg').default,
     description: (
       <>
-        Crypta can be integrated easily in scripts but is also compatible with CI/CD workflows as well as other secret
-        providers.
+        Crypta is compatible with CI/CD workflows as well as other secret providers.
       </>
     ),
   },

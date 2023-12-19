@@ -3,5 +3,5 @@
 go run docs/hack/cli/main.go
 
 cd docs
-npm ci
+npm ci --no-audit --no-fund
 npm run build
