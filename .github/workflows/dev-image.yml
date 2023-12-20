@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.inputs.message }}
+        ref: ${{ inputs.commit }}
 
     - uses: docker/login-action@v3
       with:
@@ -26,4 +26,4 @@ jobs:
         context: docker
         dockerfile: docker/Dockerfile
         push: true
-        tags: codetent/crypta-dev:${{ github.event.inputs.message }}
+        tags: codetent/crypta-dev:${{ github.sha }}
