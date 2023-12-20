@@ -1,0 +1,15 @@
+volumes:
+  workspace:
+
+services:
+  dev:
+    image: codetent/crypta-dev:e88d3dcd9dfbad063168b987a345a2fbde4b500c
+    tty: true
+    volumes:
+      - workspace:/workspace
+
+x-mutagen:
+  sync:
+    workspace:
+      alpha: ".."
+      beta: volume://workspace

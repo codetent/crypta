@@ -1,6 +1,8 @@
 {
 	"name": "crypta-dev",
-	"image": "codetent/crypta-dev:e88d3dcd9dfbad063168b987a345a2fbde4b500c",
+	"dockerComposeFile": "compose.yaml",
+	"service": "dev",
+	"workspaceFolder": "/workspace",
 	"customizations": {
 		"vscode": {
 			"extensions": [
