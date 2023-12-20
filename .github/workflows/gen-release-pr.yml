@@ -6,7 +6,7 @@ on:
 jobs:
   generate-pr:
     runs-on: ubuntu-latest
-    container: codetent/crypta-dev:e88d3dcd9dfbad063168b987a345a2fbde4b500c
+    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
     steps:
     - uses: actions/checkout@v3
       with:
