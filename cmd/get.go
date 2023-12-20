@@ -59,6 +59,8 @@ func (c *getCmd) Run(args []string) error {
 		} else {
 			return err
 		}
+	} else if err != nil {
+		return fmt.Errorf("the daemon does not seem to be running: %w", err)
 	}
 
 	fmt.Println(value)
