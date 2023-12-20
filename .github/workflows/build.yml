@@ -12,7 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     container: codetent/crypta-dev:1.0
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - run: goreleaser --clean --snapshot
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build binaries & run tests
+        run: goreleaser --clean --snapshot
+      - name: Build documentation
+        working-directory: docs
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
