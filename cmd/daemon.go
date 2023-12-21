@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"os"
 	"os/exec"
 
@@ -36,7 +37,16 @@ func NewDaemonCmd(global *globalFlags) *cobra.Command {
 		},
 	}
 
+	stop := &cobra.Command{
+		Use:   "stop",
+		Short: "Stops the crypta daemon",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return c.stop()
+		},
+	}
+
 	cc.AddCommand(start)
+	cc.AddCommand(stop)
 
 	cc.Flags().BoolVar(&c.detached, "detached", false, "Runs the daemon detached")
 	_ = cc.Flags().MarkHidden("detached")
@@ -59,6 +69,11 @@ func (c *daemonCmd) start(args []string) error {
 	cmd := exec.Command(ex, args...)
 	cmd.Dir = cwd
 	return cmd.Start()
+}
+
+func (c *daemonCmd) stop() error {
+	client := daemon.NewDaemonClient(c.global.ip, c.global.port)
+	return client.Shutdown(context.Background())
 }
 
 func (c *daemonCmd) run() error {

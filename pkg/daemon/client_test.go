@@ -47,7 +47,7 @@ func Test_daemonClient_SetSecret(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m := m_secretv1connect.NewMockSecretServiceClient(t)
 			c := &daemonClient{
-				client: m,
+				secretClient: m,
 			}
 
 			tt.wantCalls(m)
@@ -126,7 +126,7 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			m := m_secretv1connect.NewMockSecretServiceClient(t)
 			c := &daemonClient{
-				client: m,
+				secretClient: m,
 			}
 
 			tt.wantCalls(m)

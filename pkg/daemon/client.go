@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
+	controlv1 "github.com/codetent/crypta/gen/control/v1"
+	"github.com/codetent/crypta/gen/control/v1/controlv1connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
 	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
 )
@@ -16,20 +18,26 @@ var (
 )
 
 type daemonClient struct {
-	client secretv1connect.SecretServiceClient
+	secretClient  secretv1connect.SecretServiceClient
+	controlClient controlv1connect.ControlServiceClient
 }
 
 func NewDaemonClient(ip string, port string) *daemonClient {
+	endpoint := fmt.Sprintf("http://%s:%s", ip, port)
 	return &daemonClient{
-		client: secretv1connect.NewSecretServiceClient(
+		secretClient: secretv1connect.NewSecretServiceClient(
 			http.DefaultClient,
-			fmt.Sprintf("http://%s:%s", ip, port),
+			endpoint,
+		),
+		controlClient: controlv1connect.NewControlServiceClient(
+			http.DefaultClient,
+			endpoint,
 		),
 	}
 }
 
 func (c *daemonClient) SetSecret(ctx context.Context, name string, value string) error {
-	_, err := c.client.SetSecret(
+	_, err := c.secretClient.SetSecret(
 		ctx,
 		connect.NewRequest(&secretv1.SetSecretRequest{
 			Name:  name,
@@ -40,7 +48,7 @@ func (c *daemonClient) SetSecret(ctx context.Context, name string, value string)
 }
 
 func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, error) {
-	res, err := c.client.GetSecret(
+	res, err := c.secretClient.GetSecret(
 		context.Background(),
 		connect.NewRequest(&secretv1.GetSecretRequest{
 			Name: name,
@@ -55,4 +63,12 @@ func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, erro
 	}
 
 	return res.Msg.Value, nil
+}
+
+func (c *daemonClient) Shutdown(ctx context.Context) error {
+	_, err := c.controlClient.Shutdown(
+		ctx,
+		connect.NewRequest(&controlv1.ShutdownRequest{}),
+	)
+	return err
 }
