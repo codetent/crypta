@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// SecretServiceName is the fully-qualified name of the SecretService service.
@@ -37,6 +37,13 @@ const (
 	SecretServiceSetSecretProcedure = "/secret.v1.SecretService/SetSecret"
 	// SecretServiceGetSecretProcedure is the fully-qualified name of the SecretService's GetSecret RPC.
 	SecretServiceGetSecretProcedure = "/secret.v1.SecretService/GetSecret"
+)
+
+// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
+var (
+	secretServiceServiceDescriptor         = v1.File_secret_v1_secret_proto.Services().ByName("SecretService")
+	secretServiceSetSecretMethodDescriptor = secretServiceServiceDescriptor.Methods().ByName("SetSecret")
+	secretServiceGetSecretMethodDescriptor = secretServiceServiceDescriptor.Methods().ByName("GetSecret")
 )
 
 // SecretServiceClient is a client for the secret.v1.SecretService service.
@@ -58,12 +65,14 @@ func NewSecretServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 		setSecret: connect.NewClient[v1.SetSecretRequest, v1.SetSecretResponse](
 			httpClient,
 			baseURL+SecretServiceSetSecretProcedure,
-			opts...,
+			connect.WithSchema(secretServiceSetSecretMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 		getSecret: connect.NewClient[v1.GetSecretRequest, v1.GetSecretResponse](
 			httpClient,
 			baseURL+SecretServiceGetSecretProcedure,
-			opts...,
+			connect.WithSchema(secretServiceGetSecretMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 	}
 }
@@ -99,12 +108,14 @@ func NewSecretServiceHandler(svc SecretServiceHandler, opts ...connect.HandlerOp
 	secretServiceSetSecretHandler := connect.NewUnaryHandler(
 		SecretServiceSetSecretProcedure,
 		svc.SetSecret,
-		opts...,
+		connect.WithSchema(secretServiceSetSecretMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	secretServiceGetSecretHandler := connect.NewUnaryHandler(
 		SecretServiceGetSecretProcedure,
 		svc.GetSecret,
-		opts...,
+		connect.WithSchema(secretServiceGetSecretMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	return "/secret.v1.SecretService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {

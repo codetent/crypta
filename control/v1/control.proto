@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package control.v1;
+
+option go_package = "example/gen/control/v1;controlv1";
+
+message ShutdownRequest {
+}
+
+message ShutdownResponse {
+}
+
+service ControlService {
+  rpc Shutdown(ShutdownRequest) returns (ShutdownResponse) {}
+}
