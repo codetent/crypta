@@ -25,9 +25,10 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npm run build
-          cd build && tar czf docs.tar.gz .
+          mkdir -p dist
+          cd build && tar czf ../dist/docs.tar.gz * && cd ..
       - name: Archive documentation
         uses: actions/upload-artifact@v3
         with:
           name: documentation
-          path: docs/build/docs.tar.gz
+          path: docs/dist/docs.tar.gz
