@@ -4,6 +4,8 @@ name: build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -23,3 +25,9 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npm run build
+          cd build && tar czf docs.tar.gz .
+      - name: Archive documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation
+          path: docs/build/docs.tar.gz
