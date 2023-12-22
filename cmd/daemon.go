@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/codetent/crypta/pkg/daemon"
@@ -113,7 +115,7 @@ func (c *daemonCmd) stop() error {
 		return err
 	}
 
-	if err = p.Kill(); err != nil {
+	if err = p.Terminate(); err != nil {
 		return err
 	}
 
@@ -144,6 +146,13 @@ func (c *daemonCmd) stop() error {
 }
 
 func (c *daemonCmd) run() error {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		os.Exit(0)
+	}()
+
 	server := daemon.NewDaemonServer(c.global.ip, c.global.port)
 	return server.ListenAndServe()
 }
