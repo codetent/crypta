@@ -7,10 +7,8 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
-	controlv1 "github.com/codetent/crypta/gen/control/v1"
-	"github.com/codetent/crypta/gen/control/v1/controlv1connect"
-	secretv1 "github.com/codetent/crypta/gen/secret/v1"
-	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
+	daemonv1 "github.com/codetent/crypta/gen/daemon/v1"
+	"github.com/codetent/crypta/gen/daemon/v1/daemonv1connect"
 )
 
 var (
@@ -18,18 +16,13 @@ var (
 )
 
 type daemonClient struct {
-	secretClient  secretv1connect.SecretServiceClient
-	controlClient controlv1connect.ControlServiceClient
+	client daemonv1connect.DaemonServiceClient
 }
 
 func NewDaemonClient(ip string, port string) *daemonClient {
 	endpoint := fmt.Sprintf("http://%s:%s", ip, port)
 	return &daemonClient{
-		secretClient: secretv1connect.NewSecretServiceClient(
-			http.DefaultClient,
-			endpoint,
-		),
-		controlClient: controlv1connect.NewControlServiceClient(
+		client: daemonv1connect.NewDaemonServiceClient(
 			http.DefaultClient,
 			endpoint,
 		),
@@ -37,9 +30,9 @@ func NewDaemonClient(ip string, port string) *daemonClient {
 }
 
 func (c *daemonClient) SetSecret(ctx context.Context, name string, value string) error {
-	_, err := c.secretClient.SetSecret(
+	_, err := c.client.SetSecret(
 		ctx,
-		connect.NewRequest(&secretv1.SetSecretRequest{
+		connect.NewRequest(&daemonv1.SetSecretRequest{
 			Name:  name,
 			Value: value,
 		}),
@@ -48,9 +41,9 @@ func (c *daemonClient) SetSecret(ctx context.Context, name string, value string)
 }
 
 func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, error) {
-	res, err := c.secretClient.GetSecret(
+	res, err := c.client.GetSecret(
 		context.Background(),
-		connect.NewRequest(&secretv1.GetSecretRequest{
+		connect.NewRequest(&daemonv1.GetSecretRequest{
 			Name: name,
 		}),
 	)
@@ -65,10 +58,14 @@ func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, erro
 	return res.Msg.Value, nil
 }
 
-func (c *daemonClient) Shutdown(ctx context.Context) error {
-	_, err := c.controlClient.Shutdown(
-		ctx,
-		connect.NewRequest(&controlv1.ShutdownRequest{}),
+func (c *daemonClient) GetProcessId(ctx context.Context) (int32, error) {
+	res, err := c.client.GetProcessId(
+		context.Background(),
+		connect.NewRequest(&daemonv1.GetProcessIdRequest{}),
 	)
-	return err
+	if err != nil {
+		return 0, err
+	}
+
+	return res.Msg.Pid, nil
 }

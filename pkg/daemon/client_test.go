@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"connectrpc.com/connect"
-	secretv1 "github.com/codetent/crypta/gen/secret/v1"
-	m_secretv1connect "github.com/codetent/crypta/mocks/github.com/codetent/crypta/gen/secret/v1/secretv1connect"
+	daemonv1 "github.com/codetent/crypta/gen/daemon/v1"
+	m_daemonv1connect "github.com/codetent/crypta/mocks/github.com/codetent/crypta/gen/daemon/v1/daemonv1connect"
 )
 
 func Test_daemonClient_SetSecret(t *testing.T) {
@@ -18,7 +18,7 @@ func Test_daemonClient_SetSecret(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		wantCalls func(m *m_secretv1connect.MockSecretServiceClient)
+		wantCalls func(m *m_daemonv1connect.MockDaemonServiceClient)
 		wantErr   bool
 	}{
 		{
@@ -28,15 +28,15 @@ func Test_daemonClient_SetSecret(t *testing.T) {
 				name:  "foo",
 				value: "bar",
 			},
-			wantCalls: func(m *m_secretv1connect.MockSecretServiceClient) {
+			wantCalls: func(m *m_daemonv1connect.MockDaemonServiceClient) {
 				m.EXPECT().SetSecret(
 					context.Background(),
-					connect.NewRequest(&secretv1.SetSecretRequest{
+					connect.NewRequest(&daemonv1.SetSecretRequest{
 						Name:  "foo",
 						Value: "bar",
 					}),
 				).Return(
-					&connect.Response[secretv1.SetSecretResponse]{},
+					&connect.Response[daemonv1.SetSecretResponse]{},
 					nil,
 				)
 			},
@@ -45,9 +45,9 @@ func Test_daemonClient_SetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := m_secretv1connect.NewMockSecretServiceClient(t)
+			m := m_daemonv1connect.NewMockDaemonServiceClient(t)
 			c := &daemonClient{
-				secretClient: m,
+				client: m,
 			}
 
 			tt.wantCalls(m)
@@ -68,7 +68,7 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 		name      string
 		args      args
 		want      string
-		wantCalls func(m *m_secretv1connect.MockSecretServiceClient)
+		wantCalls func(m *m_daemonv1connect.MockDaemonServiceClient)
 		wantErr   bool
 	}{
 		{
@@ -78,15 +78,15 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 				name: "foo",
 			},
 			want: "bar",
-			wantCalls: func(m *m_secretv1connect.MockSecretServiceClient) {
+			wantCalls: func(m *m_daemonv1connect.MockDaemonServiceClient) {
 				m.EXPECT().GetSecret(
 					context.Background(),
-					connect.NewRequest(&secretv1.GetSecretRequest{
+					connect.NewRequest(&daemonv1.GetSecretRequest{
 						Name: "foo",
 					}),
 				).Return(
-					&connect.Response[secretv1.GetSecretResponse]{
-						Msg: &secretv1.GetSecretResponse{
+					&connect.Response[daemonv1.GetSecretResponse]{
+						Msg: &daemonv1.GetSecretResponse{
 							Value:  "bar",
 							Exists: true,
 						},
@@ -103,15 +103,15 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 				name: "foo",
 			},
 			want: "",
-			wantCalls: func(m *m_secretv1connect.MockSecretServiceClient) {
+			wantCalls: func(m *m_daemonv1connect.MockDaemonServiceClient) {
 				m.EXPECT().GetSecret(
 					context.Background(),
-					connect.NewRequest(&secretv1.GetSecretRequest{
+					connect.NewRequest(&daemonv1.GetSecretRequest{
 						Name: "foo",
 					}),
 				).Return(
-					&connect.Response[secretv1.GetSecretResponse]{
-						Msg: &secretv1.GetSecretResponse{
+					&connect.Response[daemonv1.GetSecretResponse]{
+						Msg: &daemonv1.GetSecretResponse{
 							Value:  "",
 							Exists: false,
 						},
@@ -124,9 +124,9 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := m_secretv1connect.NewMockSecretServiceClient(t)
+			m := m_daemonv1connect.NewMockDaemonServiceClient(t)
 			c := &daemonClient{
-				secretClient: m,
+				client: m,
 			}
 
 			tt.wantCalls(m)

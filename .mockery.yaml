@@ -1,9 +1,9 @@
 with-expecter: true
 packages:
-  github.com/codetent/crypta/gen/secret/v1/secretv1connect:
+  github.com/codetent/crypta/gen/daemon/v1/daemonv1connect:
     config:
     interfaces:
-      SecretServiceClient:
+      DaemonServiceClient:
         config:
   github.com/codetent/crypta/pkg/daemon:
     config:

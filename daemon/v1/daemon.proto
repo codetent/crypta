@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package secret.v1;
+package daemon.v1;
 
 message SetSecretRequest {
     string name = 1;
@@ -19,7 +19,15 @@ message GetSecretResponse {
     bool exists = 2;
 }
 
-service SecretService {
+message GetProcessIdRequest {
+}
+
+message GetProcessIdResponse {
+    int32 pid = 1;
+}
+
+service DaemonService {
     rpc SetSecret(SetSecretRequest) returns (SetSecretResponse) {}
     rpc GetSecret(GetSecretRequest) returns (GetSecretResponse) {}
+    rpc GetProcessId(GetProcessIdRequest) returns (GetProcessIdResponse) {}
 }
