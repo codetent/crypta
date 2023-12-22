@@ -25,7 +25,7 @@ func initDaemon() {
 		Ω(err).ShouldNot(HaveOccurred())
 		Eventually(daemon).Should(gexec.Exit(0))
 
-		gexec.KillAndWait()
+		// gexec.KillAndWait()
 	})
 }
 
