@@ -70,7 +70,26 @@ func (c *daemonCmd) start() error {
 	// FIXME: Pass global flags to command, in order to be able to set the endpoint
 	cmd := exec.Command(ex, "daemon", "--detached")
 	cmd.Dir = cwd
-	return cmd.Start()
+	if err = cmd.Start(); err != nil {
+		return err
+	}
+
+	// check if the daemon is started up and responsive
+	client := daemon.NewDaemonClient(c.global.ip, c.global.port)
+
+	for timeout := time.After(2 * time.Second); ; {
+		select {
+		case <-timeout:
+			return errors.New("checking whether the daemon has been started timed out")
+		default:
+			// query the interface of the daemon to determine if it is available
+			if _, unresponsive := client.GetProcessId(context.Background()); unresponsive == nil {
+				return nil
+			}
+
+			time.Sleep(10 * time.Millisecond)
+		}
+	}
 }
 
 func (c *daemonCmd) stop() error {
