@@ -113,7 +113,7 @@ func (c *daemonCmd) stop() error {
 		return err
 	}
 
-	if err = p.Terminate(); err != nil {
+	if err = p.Kill(); err != nil {
 		return err
 	}
 
