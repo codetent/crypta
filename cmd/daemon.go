@@ -33,7 +33,7 @@ func NewDaemonCmd(global *globalFlags) *cobra.Command {
 		Use:   "start",
 		Short: "Starts the crypta daemon",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.start(args)
+			return c.start()
 		},
 	}
 
@@ -54,7 +54,7 @@ func NewDaemonCmd(global *globalFlags) *cobra.Command {
 	return cc
 }
 
-func (c *daemonCmd) start(args []string) error {
+func (c *daemonCmd) start() error {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -65,8 +65,7 @@ func (c *daemonCmd) start(args []string) error {
 	}
 
 	// FIXME: Pass global flags to command, in order to be able to set the endpoint
-	args = append(args, "daemon", "--detached")
-	cmd := exec.Command(ex, args...)
+	cmd := exec.Command(ex, "daemon", "--detached")
 	cmd.Dir = cwd
 	return cmd.Start()
 }
