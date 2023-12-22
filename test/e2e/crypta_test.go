@@ -13,13 +13,18 @@ import (
 
 func initDaemon() {
 	BeforeAll(func() {
-		command := exec.Command(pathToCrypta, "daemon")
+		command := exec.Command(pathToCrypta, "daemon", "start")
 		daemon, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 		Ω(err).ShouldNot(HaveOccurred())
-		Ω(daemon).ShouldNot(gexec.Exit(0))
+		Eventually(daemon).Should(gexec.Exit(0))
 	})
 
 	AfterAll(func() {
+		command := exec.Command(pathToCrypta, "daemon", "stop")
+		daemon, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
+		Ω(err).ShouldNot(HaveOccurred())
+		Eventually(daemon).Should(gexec.Exit(0))
+
 		gexec.KillAndWait()
 	})
 }
