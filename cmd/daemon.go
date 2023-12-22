@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"log"
 	"os"
 	"os/exec"
 	"time"
@@ -116,13 +117,18 @@ func (c *daemonCmd) stop() error {
 		return err
 	}
 
+	log.Println("Before checking if daemon has stopped")
+
 	// check if the daemon has been stopped
 	for timeout := time.After(2 * time.Second); ; {
 		select {
 		case <-timeout:
+			log.Println("Timeout elapsed")
 			return errors.New("checking whether the daemon has stopped timed out")
 		default:
 			exists, err := process.PidExistsWithContext(context.Background(), pid)
+
+			log.Println("PidExistsWithContext Exists:", exists, "err:", err)
 
 			if err != nil {
 				return err
