@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-binaries:
     runs-on: ubuntu-latest
     container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
     steps:
@@ -26,12 +26,48 @@ jobs:
           npm ci --no-audit --no-fund
           npm run build
           mkdir -p dist
-          cd build && tar czf ../dist/docs.tar.gz * && cd ..
-      - name: Cache artifacts
-        uses: actions/cache@v3
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
         with:
-          key: artifacts-${{ github.head_ref || github.ref_name }} 
+          name: binaries
+          retention-days: 1
           path: |
             dist/crypta_*.tar.gz
             dist/crypta_*.zip
-            docs/dist/docs.tar.gz
+
+  build-docs:
+    runs-on: ubuntu-latest
+    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build documentation
+        working-directory: docs
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          mkdir -p dist
+      - name: Archive artifacts
+        uses: actions/upload-pages-artifact@v2
+        with:
+          name: docs
+          retention-days: 1
+          path: docs/build
+
+  deploy:
+    needs: build-docs
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: gh-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: docs
