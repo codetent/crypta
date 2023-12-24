@@ -50,13 +50,13 @@ jobs:
           npm run build
           mkdir -p dist
       - name: Archive artifacts
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           name: docs
           retention-days: 1
           path: docs/build
 
-  deploy:
+  deploy-docs:
     needs: build-docs
     permissions:
       pages: write      # to deploy to Pages
