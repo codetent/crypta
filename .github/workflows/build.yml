@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Detect & tag current version
         id: version
         uses: salsify/action-detect-and-tag-new-version@v2
