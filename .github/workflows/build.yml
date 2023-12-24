@@ -17,21 +17,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 2
+      - name: Detect & tag current version
+        id: version
+        uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          version-command: |
+            changie latest -r
       - name: Build binaries & run tests
-        run: goreleaser --clean --snapshot
+        run: |
+          goreleaser --clean ${{ steps.version.outputs.tag && '' || '--snapshot' }}
       - name: Build documentation
         working-directory: docs
         run: |
           npm ci --no-audit --no-fund
           npm run build
           mkdir -p dist
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
+      - name: Draft release
+        if: ${{ steps.version.outputs.tag && 'true' || 'false' }}
+        uses: softprops/action-gh-release@v1
         with:
-          name: binaries
-          retention-days: 1
-          path: |
+          tag_name: ${{ steps.version.outputs.tag }}
+          draft: true
+          files: |
             dist/crypta_*.tar.gz
             dist/crypta_*.zip
 
