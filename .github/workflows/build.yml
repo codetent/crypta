@@ -20,13 +20,14 @@ jobs:
           fetch-depth: 0
       - name: Detect & tag current version
         id: version
+        if: ${{ github.event_name == 'push' }}
         uses: salsify/action-detect-and-tag-new-version@v2
         with:
           version-command: |
             changie latest -r
       - name: Build binaries & run tests
         run: |
-          goreleaser --clean ${{ steps.version.outputs.tag && '' || '--snapshot' }}
+          goreleaser --clean ${{ steps.version.outputs.tag != '' && '' || '--snapshot' }}
       - name: Build documentation
         working-directory: docs
         run: |
@@ -34,7 +35,7 @@ jobs:
           npm run build
           mkdir -p dist
       - name: Draft release
-        if: ${{ steps.version.outputs.tag && 'true' || 'false' }}
+        if: ${{ github.event_name == 'push' && steps.version.outputs.tag != '' }}
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.tag }}
