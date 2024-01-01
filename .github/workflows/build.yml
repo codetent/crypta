@@ -10,12 +10,14 @@ on:
     branches: [ main ]
 
 jobs:
-  calculate-version:
+  build-binaries:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      tag: v${{ steps.version.outputs.version }}
+    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - id: latest-tag
         uses: actions-ecosystem/action-get-latest-tag@v1
         with:
@@ -26,19 +28,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           latest-tag: ${{ steps.latest-tag.outputs.tag }}
-
-  build-binaries:
-    needs: calculate-version
-    runs-on: ubuntu-latest
-    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Build binaries & run tests
         env:
-          GORELEASER_CURRENT_TAG: ${{ needs.calculate-version.outputs.tag || '' }}
+          GORELEASER_CURRENT_TAG: ${{ steps.version.outputs.version || '' }}
         run: |
           goreleaser --clean ${{ steps.version.outputs.tag != '' && '' || '--snapshot' }}
 
