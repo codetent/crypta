@@ -2,6 +2,7 @@ package crypta_test
 
 import (
 	"os/exec"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -20,7 +21,7 @@ func initDaemon() {
 		command := exec.Command(pathToCrypta, "daemon", "stop")
 		daemon, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 		Ω(err).ShouldNot(HaveOccurred())
-		Eventually(daemon).Should(gexec.Exit(0))
+		Eventually(daemon).WithTimeout(3 * time.Second).Should(gexec.Exit(0))
 
 		gexec.KillAndWait()
 	})

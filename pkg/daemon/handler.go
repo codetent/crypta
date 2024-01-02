@@ -52,7 +52,7 @@ func (s *daemonServiceServer) GetProcessId(
 	ctx context.Context,
 	req *connect.Request[daemonv1.GetProcessIdRequest],
 ) (*connect.Response[daemonv1.GetProcessIdResponse], error) {
-	go time.AfterFunc(1*time.Second, func() {
+	go time.AfterFunc(100*time.Millisecond, func() {
 		os.Exit(0)
 	})
 
