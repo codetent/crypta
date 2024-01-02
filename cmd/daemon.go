@@ -140,6 +140,25 @@ func (c *daemonCmd) stop() error {
 				return nil
 			}
 
+			err = p.SendSignal(syscall.Signal(0))
+			if err == nil {
+				log.Println("Process is still found")
+			}
+			if errors.Is(err, os.ErrProcessDone) {
+				log.Println("Process is not found: ErrProcessDone")
+			}
+			var errno syscall.Errno
+			if !errors.As(err, &errno) {
+				log.Println("Process is not found: errors.As(err, &errno)")
+			}
+			switch errno {
+			case syscall.ESRCH:
+				log.Println("Process is not found: ESRCH")
+			case syscall.EPERM:
+				log.Println("Process is still found: EPERM")
+			default:
+			}
+
 			time.Sleep(10 * time.Millisecond)
 		}
 	}
