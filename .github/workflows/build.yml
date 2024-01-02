@@ -16,3 +16,4 @@ jobs:
       with:
         fetch-depth: 0
     - run: goreleaser --clean --snapshot
+      shell: bash
