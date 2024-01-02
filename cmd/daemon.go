@@ -77,44 +77,34 @@ func (c *daemonCmd) start() error {
 		return err
 	}
 
-	// check if the daemon is started up and responsive
-	client := daemon.NewDaemonClient(c.global.ip, c.global.port)
+	return nil
 
-	for timeout := time.After(2 * time.Second); ; {
-		select {
-		case <-timeout:
-			return errors.New("checking whether the daemon has been started timed out")
-		default:
-			// query the interface of the daemon to determine if it is available
-			if _, unresponsive := client.GetProcessId(context.Background()); unresponsive == nil {
-				return nil
-			}
+	// // check if the daemon is started up and responsive
+	// client := daemon.NewDaemonClient(c.global.ip, c.global.port)
 
-			time.Sleep(10 * time.Millisecond)
-		}
-	}
+	// for timeout := time.After(2 * time.Second); ; {
+	// 	select {
+	// 	case <-timeout:
+	// 		return errors.New("checking whether the daemon has been started timed out")
+	// 	default:
+	// 		// query the interface of the daemon to determine if it is available
+	// 		if _, unresponsive := client.GetProcessId(context.Background()); unresponsive == nil {
+	// 			return nil
+	// 		}
+
+	// 		time.Sleep(10 * time.Millisecond)
+	// 	}
+	// }
 }
 
 func (c *daemonCmd) stop() error {
 	client := daemon.NewDaemonClient(c.global.ip, c.global.port)
 
 	// get the process id of the running daemon
-	pid, err := client.GetProcessId(context.Background())
+	_, err := client.GetProcessId(context.Background())
 
 	if err != nil {
-		return err
-	}
-
-	log.Println("Returned PID:", pid)
-
-	// try to stop the running daemon
-	p, err := process.NewProcess(pid)
-	if err != nil {
-		if err == process.ErrorProcessNotRunning {
-			return nil
-		}
-
-		return err
+		log.Println("Did not receive a PID")
 	}
 
 	log.Println("Running processes:")
@@ -124,10 +114,6 @@ func (c *daemonCmd) stop() error {
 		log.Println(name, ":", p.Pid)
 	}
 
-	if err = p.Terminate(); err != nil {
-		return err
-	}
-
 	// check if the daemon has been stopped
 	for timeout := time.After(2 * time.Second); ; {
 		select {
@@ -135,17 +121,17 @@ func (c *daemonCmd) stop() error {
 			log.Println("Timeout elapsed")
 			return errors.New("checking whether the daemon has stopped timed out")
 		default:
-			exists, err := process.PidExistsWithContext(context.Background(), pid)
+			// exists, err := process.PidExistsWithContext(context.Background(), pid)
 
-			log.Println("PidExistsWithContext Exists:", exists, "err:", err)
+			// log.Println("PidExistsWithContext Exists:", exists, "err:", err)
 
-			if err != nil {
-				return err
-			}
+			// if err != nil {
+			// 	return err
+			// }
 
-			if !exists {
-				return nil
-			}
+			// if !exists {
+			// 	return nil
+			// }
 
 			log.Println("Running processes:")
 			processes, _ := process.Processes()
@@ -154,14 +140,7 @@ func (c *daemonCmd) stop() error {
 				log.Println(name, ":", p.Pid)
 			}
 
-			if err = p.Kill(); err != nil {
-				return err
-			}
-			if err = p.Terminate(); err != nil {
-				return err
-			}
-
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(100 * time.Millisecond)
 		}
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"os"
-	"time"
 
 	connect "connectrpc.com/connect"
 	daemonv1 "github.com/codetent/crypta/gen/daemon/v1"
@@ -52,9 +51,7 @@ func (s *daemonServiceServer) GetProcessId(
 	ctx context.Context,
 	req *connect.Request[daemonv1.GetProcessIdRequest],
 ) (*connect.Response[daemonv1.GetProcessIdResponse], error) {
-	go time.AfterFunc(100*time.Millisecond, func() {
-		os.Exit(0)
-	})
+	os.Exit(0)
 
 	return connect.NewResponse(&daemonv1.GetProcessIdResponse{
 		Pid: int32(os.Getpid()),
