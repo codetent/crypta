@@ -4,7 +4,7 @@ Get cached secret value
 
 ### Synopsis
 
-Retrieves the cached secret value which has been either set by using the provided 'set' command, or by setting environment variables. The environment variables have the following format: `CRYPTA_SET_<KEY>`. The value given for `<KEY>` will be used as the name with which the value of the environment variable will be added to the secret store.
+Retrieves the cached secret value which has been either set by using the provided `set` command, or by setting environment variables. The environment variables have the following format: `CRYPTA_SET_<KEY>`. The value given for `<KEY>` will be used as the name with which the value of the environment variable will be added to the secret store.
 
 ```
 crypta get [flags]
