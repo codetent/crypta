@@ -105,6 +105,8 @@ func (c *daemonCmd) stop() error {
 		return err
 	}
 
+	log.Println("Returned PID:", pid)
+
 	// try to stop the running daemon
 	p, err := process.NewProcess(pid)
 	if err != nil {
@@ -113,6 +115,13 @@ func (c *daemonCmd) stop() error {
 		}
 
 		return err
+	}
+
+	log.Println("Running processes:")
+	processes, _ := process.Processes()
+	for _, p := range processes {
+		name, _ := p.Name()
+		log.Println(name, ":", p.Pid)
 	}
 
 	if err = p.Terminate(); err != nil {
@@ -157,6 +166,13 @@ func (c *daemonCmd) stop() error {
 			case syscall.EPERM:
 				log.Println("Process is still found: EPERM")
 			default:
+			}
+
+			log.Println("Running processes:")
+			processes, _ := process.Processes()
+			for _, p := range processes {
+				name, _ := p.Name()
+				log.Println(name, ":", p.Pid)
 			}
 
 			time.Sleep(10 * time.Millisecond)
