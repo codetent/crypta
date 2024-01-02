@@ -128,8 +128,6 @@ func (c *daemonCmd) stop() error {
 		return err
 	}
 
-	log.Println("Before checking if daemon has stopped")
-
 	// check if the daemon has been stopped
 	for timeout := time.After(2 * time.Second); ; {
 		select {
@@ -149,30 +147,18 @@ func (c *daemonCmd) stop() error {
 				return nil
 			}
 
-			err = p.SendSignal(syscall.Signal(0))
-			if err == nil {
-				log.Println("Process is still found")
-			}
-			if errors.Is(err, os.ErrProcessDone) {
-				log.Println("Process is not found: ErrProcessDone")
-			}
-			var errno syscall.Errno
-			if !errors.As(err, &errno) {
-				log.Println("Process is not found: errors.As(err, &errno)")
-			}
-			switch errno {
-			case syscall.ESRCH:
-				log.Println("Process is not found: ESRCH")
-			case syscall.EPERM:
-				log.Println("Process is still found: EPERM")
-			default:
-			}
-
 			log.Println("Running processes:")
 			processes, _ := process.Processes()
 			for _, p := range processes {
 				name, _ := p.Name()
 				log.Println(name, ":", p.Pid)
+			}
+
+			if err = p.Kill(); err != nil {
+				return err
+			}
+			if err = p.Terminate(); err != nil {
+				return err
 			}
 
 			time.Sleep(10 * time.Millisecond)
