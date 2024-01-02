@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: version
-        uses: codetent/semver-by-label-action@be5a21832ac318787cff12df2710791351ecbd4f
+        uses: codetent/semver-by-label-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build binaries & run tests
