@@ -113,11 +113,9 @@ func (c *daemonCmd) stop() error {
 		for _, p := range processes {
 			name, _ := p.Name()
 			args, _ := p.Cmdline()
-			log.Print(name, ":", args, "-", p.Pid)
+			log.Println(name, ":", args, "-", p.Pid)
 
-			if parent, err := p.Parent(); err != nil {
-				log.Println("")
-			} else {
+			if parent, err := p.Parent(); err == nil {
 				pname, _ := parent.Name()
 				log.Println(" / Parent:", pname, ":", parent.Pid)
 			}
