@@ -134,7 +134,7 @@ func TestPopulateStore(t *testing.T) {
 		expect func(store *m_store.MockSecretStore)
 	}{
 		{
-			name: "Does not pre-populate secret store if no fitting env variables with prefix CRYPTA_SET_ are set",
+			name: "Does not pre-populate secret store if no fitting env variables with prefix CRYPTA_SECRET_ are set",
 			env: map[string]string{
 				"TEST":    "TEST",
 				"CRYPTA_": "TEST",
@@ -144,17 +144,17 @@ func TestPopulateStore(t *testing.T) {
 		{
 			name: "Does not pre-populate secret store if given key or value are empty",
 			env: map[string]string{
-				"CRYPTA_SET_":    "TEST",
-				"CRYPTA_SET_XYZ": "",
+				"CRYPTA_SECRET_":    "TEST",
+				"CRYPTA_SECRET_XYZ": "",
 			},
 			expect: func(store *m_store.MockSecretStore) {},
 		},
 		{
-			name: "Pre-populates secret store with content of env variables with prefix CRYPTA_SET_",
+			name: "Pre-populates secret store with content of env variables with prefix CRYPTA_SECRET_",
 			env: map[string]string{
-				"TEST":               "TEST",
-				"CRYPTA_SET_TEST123": "ABCD",
-				"CRYPTA_SET_XYZ":     "AFGH",
+				"TEST":                  "TEST",
+				"CRYPTA_SECRET_TEST123": "ABCD",
+				"CRYPTA_SECRET_XYZ":     "AFGH",
 			},
 			expect: func(store *m_store.MockSecretStore) {
 				store.EXPECT().SetSecret("TEST123", "ABCD").Once()

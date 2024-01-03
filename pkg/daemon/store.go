@@ -11,7 +11,7 @@ type SecretStore interface {
 }
 
 func PopulateStore(store SecretStore) {
-	const prefix string = "CRYPTA_SET_"
+	const prefix string = "CRYPTA_SECRET_"
 
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
