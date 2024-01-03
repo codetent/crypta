@@ -39,7 +39,7 @@ jobs:
         env:
           GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
         run: |
-          goreleaser --clean ${{ needs.draft-release.outputs.tag == '' && '--snapshot' || '' }}
+          goreleaser --clean --skip=publish --skip=announce ${{ needs.draft-release.outputs.tag == '' && '--snapshot' || '' }}
 
   build-docs:
     runs-on: ubuntu-latest
