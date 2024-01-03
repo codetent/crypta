@@ -22,6 +22,7 @@ jobs:
         uses: codetent/semver-by-label-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Build binaries & run tests
         env:
           GORELEASER_CURRENT_TAG: ${{ steps.version.outputs.version || '' }}
