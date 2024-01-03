@@ -14,16 +14,17 @@ func PopulateStore(store SecretStore) {
 	const prefix string = "CRYPTA_SECRET_"
 
 	for _, e := range os.Environ() {
-		pair := strings.SplitN(e, "=", 2)
+		name, value, _ := strings.Cut(e, "=")
 
-		if strings.HasPrefix(pair[0], prefix) {
-			key := pair[0][len(prefix):]
+		// extract "<KEY>" from "<PREFIX><KEY>"
+		key, found := strings.CutPrefix(name, prefix)
 
-			if len(key) == 0 || len(pair[1]) == 0 {
+		if found {
+			if len(key) == 0 || len(value) == 0 {
 				continue
 			}
 
-			store.SetSecret(key, pair[1])
+			store.SetSecret(key, value)
 		}
 	}
 }
