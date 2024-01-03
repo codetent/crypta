@@ -107,11 +107,21 @@ func (c *daemonCmd) stop() error {
 		log.Println("Did not receive a PID")
 	}
 
-	log.Println("Running processes:")
-	processes, _ := process.Processes()
-	for _, p := range processes {
-		name, _ := p.Name()
-		log.Println(name, ":", p.Pid)
+	listRunningProcesses := func() {
+		log.Println("Running processes:")
+		processes, _ := process.Processes()
+		for _, p := range processes {
+			name, _ := p.Name()
+			args, _ := p.Cmdline()
+			log.Print(name, ":", args, "-", p.Pid)
+
+			if parent, err := p.Parent(); err != nil {
+				log.Println("")
+			} else {
+				pname, _ := parent.Name()
+				log.Println(" / Parent:", pname, ":", parent.Pid)
+			}
+		}
 	}
 
 	// check if the daemon has been stopped
@@ -133,12 +143,7 @@ func (c *daemonCmd) stop() error {
 			// 	return nil
 			// }
 
-			log.Println("Running processes:")
-			processes, _ := process.Processes()
-			for _, p := range processes {
-				name, _ := p.Name()
-				log.Println(name, ":", p.Pid)
-			}
+			listRunningProcesses()
 
 			time.Sleep(100 * time.Millisecond)
 		}
