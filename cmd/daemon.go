@@ -117,7 +117,8 @@ func (c *daemonCmd) stop() error {
 		for _, p := range processes {
 			name, _ := p.Name()
 			args, _ := p.Cmdline()
-			log.Println(name, ":", args, "-", p.Pid)
+			status, _ := p.Status()
+			log.Println(name, ":", args, "-", p.Pid, "Status:", status)
 
 			if parent, err := p.Parent(); err == nil {
 				pname, _ := parent.Name()
