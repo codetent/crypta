@@ -17,4 +17,5 @@ jobs:
         fetch-depth: 0
     - run: goreleaser --clean --snapshot
       shell: bash
-    - run: cat /__w/crypta/crypta/daemon.log
+    - if: always()
+      run: cat /__w/crypta/crypta/daemon.log
