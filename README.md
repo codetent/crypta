@@ -1,9 +1,9 @@
 <div align="center">
   <br>
   <img src="docs/logo.svg" width="100" /><br>
-  
+
   # Crypta
-  
+
   Local developer credentials as simple as it should be.
   <br/><br/>
 </div>
@@ -34,3 +34,17 @@ Otherwise you can install it from source using `go install`:
 ```sh
 go install github.com/codetent/crypta@latest
 ```
+
+## Usage in CI environments
+
+CI environments usually provide some sort of secret provider. It is common that secrets are made available to the
+execution environment via environment variables. Crypta supports this usecase as well by pre-populating the secret store
+with secret content from environment variables with the prefix `CRYPTA_SECRET_<KEY>`. The environment variables are
+parsed when the crypta daemon is started.
+
+In your build scripts, whenever you need to retrieve a secret, you would call `crypta get <KEY>`. If the build script is
+executed in a CI environment, where a secret provider is available, the secret is pre-populated via the
+`CRYPTA_SECRET_<KEY>` environment variable. If the build script is executed in a local development environment on the
+other hand, Crypta would now request the user to input the value for the secret (e.g., their user credentials). This
+allows you to use the same build script in your CI and local development environment, without any adaptations required
+to handle secrets.
