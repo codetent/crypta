@@ -45,6 +45,7 @@ parsed when the crypta daemon is started.
 In your build scripts, whenever you need to retrieve a secret, you would call `crypta get <KEY>`. If the build script is
 executed in a CI environment, where a secret provider is available, the secret is pre-populated via the
 `CRYPTA_SECRET_<KEY>` environment variable. If the build script is executed in a local development environment on the
-other hand, Crypta would now request the user to input the value for the secret (e.g., their user credentials). This
-allows you to use the same build script in your CI and local development environment, without any adaptations required
-to handle secrets.
+other hand, a secret provider is usually not available. Therefore, no pre-population of the secret store takes place and
+Crypta would now request the user to input the value for the secret (e.g., their user credentials). This
+allows you to use the same build script in your CI and local development environment, without any adaptations or special 
+case handling required to handle the secrets.
