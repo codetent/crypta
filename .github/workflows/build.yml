@@ -18,4 +18,4 @@ jobs:
     - run: goreleaser --clean --snapshot
       shell: bash
     - if: always()
-      run: cat /__w/crypta/crypta/daemon.log
+      run: cat /tmp/daemon.log

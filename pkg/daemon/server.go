@@ -24,7 +24,7 @@ func (s *daemonServer) ListenAndServe() error {
 	mux := http.NewServeMux()
 	mux.Handle(NewDaemonServiceHandler())
 
-	fo, _ := os.OpenFile("/workspaces/crypta/daemon.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	fo, _ := os.OpenFile("/tmp/daemon.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	defer fo.Close()
 
 	log.SetOutput(fo)
