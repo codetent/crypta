@@ -77,6 +77,10 @@ func (c *daemonCmd) start() error {
 		return err
 	}
 
+	if err = cmd.Process.Release(); err != nil {
+		return err
+	}
+
 	return nil
 
 	// // check if the daemon is started up and responsive
