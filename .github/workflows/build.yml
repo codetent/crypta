@@ -27,6 +27,7 @@ jobs:
 
   build-binaries:
     needs: draft-release
+    if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
     container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
     steps:
