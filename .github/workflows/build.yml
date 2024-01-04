@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
-      options: --user 1001
+      options: --user 1001  # use runner user
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
-      options: --user 1001
+      options: --user 1001  # use runner user
     steps:
       - name: Checkout
         uses: actions/checkout@v4
