@@ -35,13 +35,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Run repo check
+        run: git rev-parse --is-inside-work-tree
       - name: Build binaries & run tests
         env:
           GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
         run: |
           goreleaser \
+            --clean \
             --skip=validate --skip=publish --skip=announce \
-            --clean ${{ needs.draft-release.result == 'skipped' && '--snapshot' || '' }}
+            ${{ needs.draft-release.result == 'skipped' && '--snapshot' || '' }}
 
   build-docs:
     runs-on: ubuntu-latest
