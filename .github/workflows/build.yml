@@ -5,9 +5,9 @@ name: build
 on:
   workflow_dispatch:
   push:
-    branches: [ GH-15_doc ]
-  #pull_request:
-  #  branches: [ main ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   draft-release:
