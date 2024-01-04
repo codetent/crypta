@@ -28,6 +28,8 @@ jobs:
   build-binaries:
     needs: draft-release
     if: always() && !failure() && !cancelled()
+    permissions:
+      contents: write  # write permission is required for uploading release artifacts
     runs-on: ubuntu-latest
     container:
       image: codetent/crypta-dev:578eeebbdcbfe7d99b0fe2dbedfadb37973e8bce
