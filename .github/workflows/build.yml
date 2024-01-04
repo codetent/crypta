@@ -29,10 +29,12 @@ jobs:
     needs: draft-release
     if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
-    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+    container:
+      image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+      options: --user 1001
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Run repo check
@@ -48,10 +50,12 @@ jobs:
 
   build-docs:
     runs-on: ubuntu-latest
-    container: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+    container:
+      image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+      options: --user 1001
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build documentation
         working-directory: docs
         run: |
