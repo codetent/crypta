@@ -3,6 +3,7 @@ package crypta_test
 import (
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -11,9 +12,10 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-func initDaemon() {
+func initDaemon(setCmdEnv func(*exec.Cmd)) {
 	BeforeAll(func() {
 		command := exec.Command(pathToCrypta, "daemon")
+		setCmdEnv(command)
 		daemon, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 		Ω(err).ShouldNot(HaveOccurred())
 		Ω(daemon).ShouldNot(gexec.Exit(0))
@@ -23,6 +25,8 @@ func initDaemon() {
 		gexec.KillAndWait()
 	})
 }
+
+func defaultEnv(*exec.Cmd) {}
 
 func setValue(key, val string) {
 	cmd := exec.Command(pathToCrypta, "set", key, val)
@@ -48,7 +52,7 @@ var _ = Describe("Crypta", func() {
 		val := "xyz"
 		otherVal := "zyx"
 
-		initDaemon()
+		initDaemon(defaultEnv)
 
 		It("sets a new value", func() {
 			setValue(key, val)
@@ -85,7 +89,7 @@ var _ = Describe("Crypta", func() {
 		val := "xyz"
 		newVal := "xxx"
 
-		initDaemon()
+		initDaemon(defaultEnv)
 
 		It("sets a value", func() {
 			setValue(key, val)
@@ -106,7 +110,7 @@ var _ = Describe("Crypta", func() {
 
 		val := "xyz"
 
-		initDaemon()
+		initDaemon(defaultEnv)
 
 		BeforeEach(func() {
 			cmd := exec.Command(pathToCrypta, "get", "abcd")
@@ -155,6 +159,22 @@ var _ = Describe("Crypta", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 
 			Eventually(crypta).Should(gexec.Exit(1))
+		})
+	})
+
+	Describe("An initial value set via environment variables can be retrieved", Ordered, func() {
+		key := "abcd"
+		val := "xyz"
+
+		initDaemon(func(c *exec.Cmd) {
+			c.Env = os.Environ()
+
+			// set secret as environment variable
+			c.Env = append(c.Env, fmt.Sprintf("CRYPTA_SECRET_%s=%s", key, val))
+		})
+
+		It("retrieves the initial value set via the environment variable", func() {
+			Ω(getValue(key)).Should(Equal(val + "\n"))
 		})
 	})
 })
