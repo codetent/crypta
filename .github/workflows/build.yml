@@ -30,15 +30,13 @@ jobs:
     if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
     container:
-      image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+      image: codetent/crypta-dev:578eeebbdcbfe7d99b0fe2dbedfadb37973e8bce
       options: --user 1001  # use runner user
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Run repo check
-        run: git rev-parse --is-inside-work-tree
       - name: Build binaries & run tests
         env:
           GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
@@ -60,7 +58,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     container:
-      image: codetent/crypta-dev:4dc85186fa8e3bf467b99ce7530047e2f5d8237b
+      image: codetent/crypta-dev:578eeebbdcbfe7d99b0fe2dbedfadb37973e8bce
       options: --user 1001  # use runner user
     steps:
       - name: Checkout
