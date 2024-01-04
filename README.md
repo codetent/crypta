@@ -1,11 +1,11 @@
 <div align="center">
-  <br>
-  <img src="docs/static/img/logo.svg" width="100" /><br>
-  
-  # Crypta
+<br>
+<img src="docs/static/img/logo.svg" width="100" /><br>
 
-  Local developer credentials as simple as it should be.
-  <br/><br/>
+# Crypta
+
+Local developer credentials as simple as it should be.
+<br/><br/>
 </div>
 
 ## What is crypta?
