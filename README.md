@@ -22,6 +22,43 @@ Especially if you run the environment locally or even in the cloud without using
 
 This is where crypta steps in: it is simply called in your build scripts when you need credentials to authenticate. If credentials are already cached, it will provide them. Otherwise, it will ask for them and cache them afterwards.
 
+## How do I use it?
+
+Crypta consists of a secret store & a client application. The secret store needs to be started first before the client
+application can be used. This is done by calling
+
+```sh
+crypta daemon
+```
+
+The secret store (or as we call it: the daemon) is a blocking process, which is probably why you will either want to
+spawn it in its own shell, or move the process to the background.
+
+<table>
+<thead>
+  <tr>
+    <th></th>
+    <th>Linux</th>
+    <th>Windows</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Run the daemon in it's own shell</td>
+    <td>sh -c "crypta daemon"</td>
+    <td>start cmd.exe /c "crypta.exe daemon"</td>
+  </tr>
+  <tr>
+    <td>Run the daemon in the background in the same shell</td>
+    <td>crypta daemon &</td>
+    <td>start /B crypta daemon</td>
+  </tr>
+</tbody>
+</table>
+
+When the daemon is running, you can use crypta's `get` & `set` commands to interact with the secret store. For more
+information, check out the [CLI reference](docs/pages/crypta.md).
+
 ## Documentation
 
 - CLI reference: [docs/pages](docs/pages/crypta.md)
@@ -47,5 +84,5 @@ executed in a CI environment, where a secret provider is available, the secret i
 `CRYPTA_SECRET_<KEY>` environment variable. If the build script is executed in a local development environment on the
 other hand, a secret provider is usually not available. Therefore, no pre-population of the secret store takes place and
 Crypta would now request the user to input the value for the secret (e.g., their user credentials). This
-allows you to use the same build script in your CI and local development environment, without any adaptations or special 
+allows you to use the same build script in your CI and local development environment, without any adaptations or special
 case handling required to handle the secrets.
