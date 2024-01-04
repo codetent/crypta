@@ -4,15 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"net"
 	"net/http"
+	"os"
 
 	"connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
 	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 var (
 	ErrSecretNotExists = errors.New("secret does not exist")
+	networkError       *net.OpError
 )
 
 type daemonClient struct {
@@ -20,9 +26,22 @@ type daemonClient struct {
 }
 
 func NewDaemonClient(ip string, port string) *daemonClient {
+	c := retryablehttp.NewClient()
+
+	// disable logging of the retries (as it is quite verbose)
+	silentLogger := log.New(io.Discard, "", 0)
+	c.Logger = silentLogger
+
+	// hook the retries in order to inform the user
+	c.RequestLogHook = func(l retryablehttp.Logger, r *http.Request, i int) {
+		// it is important to log to Stderr here, since Stdout is read by scripts to get values etc
+		// retries are counted starting from 0
+		fmt.Fprintf(os.Stderr, "Daemon currently not reachable. Retry %d of %d...\n", i+1, c.RetryMax+1)
+	}
+
 	return &daemonClient{
 		client: secretv1connect.NewSecretServiceClient(
-			http.DefaultClient,
+			c.StandardClient(),
 			fmt.Sprintf("http://%s:%s", ip, port),
 		),
 	}
