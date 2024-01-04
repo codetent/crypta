@@ -1,8 +1,32 @@
 package daemon
 
+import (
+	"os"
+	"strings"
+)
+
 type SecretStore interface {
 	SetSecret(string, string)
 	GetSecret(string) (string, bool)
+}
+
+func PopulateStore(store SecretStore) {
+	const prefix string = "CRYPTA_SECRET_"
+
+	for _, e := range os.Environ() {
+		name, value, _ := strings.Cut(e, "=")
+
+		// extract "<KEY>" from "<PREFIX><KEY>"
+		key, found := strings.CutPrefix(name, prefix)
+
+		if found {
+			if len(key) == 0 || len(value) == 0 {
+				continue
+			}
+
+			store.SetSecret(key, value)
+		}
+	}
 }
 
 type LocalSecretStore struct {

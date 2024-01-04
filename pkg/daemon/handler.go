@@ -14,9 +14,9 @@ type secretServiceServer struct {
 	store SecretStore
 }
 
-func NewSecretServiceHandler() (string, http.Handler) {
+func NewSecretServiceHandler(store SecretStore) (string, http.Handler) {
 	return secretv1connect.NewSecretServiceHandler(&secretServiceServer{
-		store: NewLocalSecretStore(),
+		store: store,
 	})
 }
 

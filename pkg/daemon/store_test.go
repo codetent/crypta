@@ -3,6 +3,8 @@ package daemon
 import (
 	"reflect"
 	"testing"
+
+	m_store "github.com/codetent/crypta/mocks/github.com/codetent/crypta/pkg/daemon"
 )
 
 func TestSecretStore_SetSecret(t *testing.T) {
@@ -121,6 +123,55 @@ func TestNewSecretStore(t *testing.T) {
 			if got := NewLocalSecretStore(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewSecretStore() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestPopulateStore(t *testing.T) {
+	tests := []struct {
+		name   string
+		env    map[string]string
+		expect func(store *m_store.MockSecretStore)
+	}{
+		{
+			name: "Does not pre-populate secret store if no fitting env variables with prefix CRYPTA_SECRET_ are set",
+			env: map[string]string{
+				"TEST":    "TEST",
+				"CRYPTA_": "TEST",
+			},
+			expect: func(store *m_store.MockSecretStore) {},
+		},
+		{
+			name: "Does not pre-populate secret store if given key or value are empty",
+			env: map[string]string{
+				"CRYPTA_SECRET_":    "TEST",
+				"CRYPTA_SECRET_XYZ": "",
+			},
+			expect: func(store *m_store.MockSecretStore) {},
+		},
+		{
+			name: "Pre-populates secret store with content of env variables with prefix CRYPTA_SECRET_",
+			env: map[string]string{
+				"TEST":                  "TEST",
+				"CRYPTA_SECRET_TEST123": "ABCD",
+				"CRYPTA_SECRET_XYZ":     "AFGH",
+			},
+			expect: func(store *m_store.MockSecretStore) {
+				store.EXPECT().SetSecret("TEST123", "ABCD").Once()
+				store.EXPECT().SetSecret("XYZ", "AFGH").Once()
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			store := m_store.NewMockSecretStore(t)
+
+			for k, v := range tt.env {
+				t.Setenv(k, v)
+			}
+
+			tt.expect(store)
+			PopulateStore(store)
 		})
 	}
 }

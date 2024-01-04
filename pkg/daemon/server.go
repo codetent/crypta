@@ -19,8 +19,12 @@ func NewDaemonServer(ip string, port string) *daemonServer {
 }
 
 func (s *daemonServer) ListenAndServe() error {
+	store := NewLocalSecretStore()
+
+	PopulateStore(store)
+
 	mux := http.NewServeMux()
-	mux.Handle(NewSecretServiceHandler())
+	mux.Handle(NewSecretServiceHandler(store))
 
 	return http.ListenAndServe(s.address, h2c.NewHandler(mux, &http2.Server{}))
 }
