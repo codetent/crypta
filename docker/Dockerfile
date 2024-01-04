@@ -37,13 +37,6 @@ RUN eget --to "/usr/local/bin" \
     -t "v${GOLANGCI_LINT_VERSION}" \
     -a "golangci-lint-${GOLANGCI_LINT_VERSION}-linux-amd64.tar.gz"
 
-# Install changie
-ARG CHANGIE_VERSION=1.17.0
-RUN eget --to "/usr/local/bin" \
-    miniscruff/changie \
-    -t "v${CHANGIE_VERSION}" \
-    -a "changie_${CHANGIE_VERSION}_linux_amd64.tar.gz"
-
 # Install goreleaser
 ARG GORELEASER_VERSION=1.22.1
 RUN eget --to "/usr/local/bin" \
