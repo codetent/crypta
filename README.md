@@ -36,23 +36,47 @@ spawn it in its own shell, or move the process to the background.
 
 <table>
 <thead>
-  <tr>
-    <th></th>
-    <th>Linux</th>
-    <th>Windows</th>
-  </tr>
+<tr>
+<th></th>
+<th>Linux</th>
+<th>Windows</th>
+</tr>
 </thead>
 <tbody>
-  <tr>
-    <td>Run the daemon in it's own shell</td>
-    <td>sh -c "crypta daemon"</td>
-    <td>start cmd.exe /c "crypta.exe daemon"</td>
-  </tr>
-  <tr>
-    <td>Run the daemon in the background in the same shell</td>
-    <td>crypta daemon &</td>
-    <td>start /B crypta daemon</td>
-  </tr>
+<tr>
+<td>Run the daemon in it's own shell</td>
+<td>
+  
+```sh
+  sh -c "crypta daemon"
+```
+
+</td>
+<td>
+
+```sh
+  start cmd.exe /c "crypta.exe daemon"
+```
+
+</td>
+</tr>
+<tr>
+<td>Run the daemon in the background in the same shell</td>
+<td>
+
+```sh
+  crypta daemon &
+```
+
+</td>
+<td>
+  
+```sh
+  start /B crypta daemon
+```
+
+</td>
+</tr>
 </tbody>
 </table>
 
