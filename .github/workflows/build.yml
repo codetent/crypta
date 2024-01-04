@@ -38,11 +38,10 @@ jobs:
       - name: Build binaries & run tests
         env:
           GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
-        run: >
-          goreleaser
-            --clean
-            --skip=validate --skip=publish --skip=announce
-            ${{ needs.draft-release.result == 'skipped' && '--snapshot' || '' }}
+        run: |
+          goreleaser \
+            --skip=validate --skip=publish --skip=announce \
+            --clean ${{ needs.draft-release.result == 'skipped' && '--snapshot' || '' }}
 
   build-docs:
     runs-on: ubuntu-latest
