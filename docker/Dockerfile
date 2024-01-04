@@ -70,3 +70,10 @@ ARG GINKGO_VERSION=2.13.2
 RUN GOBIN=/usr/local/bin \
     go install github.com/onsi/ginkgo/v2/ginkgo@v${GINKGO_VERSION} && \
     go clean -cache
+
+# Install gh cli
+ARG GH_VERSION=2.40.1
+RUN eget --to "/usr/local/bin" \
+    cli/cli \
+    -t "v${GH_VERSION}" \
+    -a "gh_${GH_VERSION}_linux_amd64.tar.gz"
