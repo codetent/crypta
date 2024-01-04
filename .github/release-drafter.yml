@@ -25,4 +25,6 @@ version-resolver:
     labels:
       - bug
   default: patch
-template: ''
+template: |
+  ## What's Changed
+category-template: '### $TITLE'
