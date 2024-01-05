@@ -67,11 +67,8 @@ go run main.go
 
 For getting the compiled binary, `go build` can be utilized.
 
-In the workflows, several binaries for different operating systems are built. This matrix build is realized using
-`goreleaser` which is also calculating and injecting the current version. Before the build, the code is statically
-analyzed and unit tests are executed. Afterwards, the outputs are packed into archives.
-
-The workflow can be tested (if needed) by calling `goreleaser`:
+In the workflows, several binaries for different operating systems are built using `goreleaser`.
+The workflow can be tested, if needed:
 
 ```
 goreleaser --clean --snapshot
