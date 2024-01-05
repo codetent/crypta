@@ -8,6 +8,10 @@ Local developer credentials as simple as it should be.
 <br/><br/>
 </div>
 
+- Documentation: https://codetent.github.io/crypta/
+- Releases: https://github.com/codetent/crypta/releases
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## What is crypta?
 
 Crypta is a CLI tool that caches your local development credentials allowing you to enter them once and using it multiple times without beeing asked.
@@ -82,10 +86,6 @@ spawn it in its own shell, or move the process to the background.
 
 When the daemon is running, you can use crypta's `get` & `set` commands to interact with the secret store. For more
 information, check out the [CLI reference](docs/pages/crypta.md).
-
-## Documentation
-
-- CLI reference: [docs/pages](docs/pages/crypta.md)
 
 ## Installation
 
