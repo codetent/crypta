@@ -1,16 +1,19 @@
-## crypta set
+---
+hide_title: true
+sidebar_label: crypta daemon
+---
+## crypta daemon
 
-Set secret value
+Run the crypta daemon
 
 ```
-crypta set [flags]
+crypta daemon [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help     help for set
-      --hidden   Hide user input
+  -h, --help   help for daemon
 ```
 
 ### Options inherited from parent commands

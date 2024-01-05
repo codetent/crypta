@@ -1,4 +1,0 @@
-kind: Added
-body: 'GH-11: Prepopulate secret store with values from environment variables. The
-  environment variables have the following format: CRYPTA_SECRET_<KEY>.'
-time: 2024-01-02T09:22:19.2525945Z

@@ -1,12 +1,16 @@
 <div align="center">
-  <br>
-  <img src="docs/logo.svg" width="100" /><br>
+<br>
+<img src="docs/static/img/logo.svg" width="100" /><br>
 
-  # Crypta
+# Crypta
 
-  Local developer credentials as simple as it should be.
-  <br/><br/>
+Local developer credentials as simple as it should be.
+<br/><br/>
 </div>
+
+- Documentation: https://codetent.github.io/crypta/
+- Releases: https://github.com/codetent/crypta/releases
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## What is crypta?
 
@@ -82,10 +86,6 @@ spawn it in its own shell, or move the process to the background.
 
 When the daemon is running, you can use crypta's `get` & `set` commands to interact with the secret store. For more
 information, check out the [CLI reference](docs/pages/crypta.md).
-
-## Documentation
-
-- CLI reference: [docs/pages](docs/pages/crypta.md)
 
 ## Installation
 
