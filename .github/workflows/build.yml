@@ -32,7 +32,7 @@ jobs:
       contents: write  # write permission is required for uploading release artifacts
     runs-on: ubuntu-latest
     container:
-      image: codetent/crypta-dev:578eeebbdcbfe7d99b0fe2dbedfadb37973e8bce
+      image: codetent/crypta-dev:ebad54dad1f32b5a4c983181fe446a57ba706ba0
       options: --user 1001  # use runner user
     steps:
       - name: Checkout
@@ -61,7 +61,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     container:
-      image: codetent/crypta-dev:578eeebbdcbfe7d99b0fe2dbedfadb37973e8bce
+      image: codetent/crypta-dev:ebad54dad1f32b5a4c983181fe446a57ba706ba0
       options: --user 1001  # use runner user
     steps:
       - name: Checkout
