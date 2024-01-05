@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra/doc"
 )
 
-func filePrepender(s string) string {
+func addMetadata(s string) string {
 	base := strings.TrimSuffix(filepath.Base(s), filepath.Ext(s))
 	cmdline := strings.Join(strings.Split(base, "_"), " ")
 	pre := []string{
@@ -26,7 +26,7 @@ func linkHandler(s string) string {
 
 func main() {
 	cmd := cmd.NewRootCmd()
-	err := doc.GenMarkdownTreeCustom(cmd, "docs/pages/cli", filePrepender, linkHandler)
+	err := doc.GenMarkdownTreeCustom(cmd, "docs/pages/cli", addMetadata, linkHandler)
 	if err != nil {
 		panic(err)
 	}
