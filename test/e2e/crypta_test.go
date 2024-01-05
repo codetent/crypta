@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -146,19 +147,43 @@ var _ = Describe("Crypta", func() {
 	})
 
 	It("should return an error if the daemon is not running when", func() {
+		setTimeout := func(c *exec.Cmd) {
+			c.Env = os.Environ()
+			c.Env = append(c.Env, "CRYPTA_TIMEOUT=0.1")
+		}
+
+		checkErrOutputForConnectionTimeout := func(out string) {
+			Expect(out).To(ContainSubstring("Using set maximum connection timeout: 100ms"))
+		}
+
+		checkErrOutputForRetries := func(out string) {
+			for i := 1; i <= 5; i++ {
+				Expect(out).To(ContainSubstring(fmt.Sprintf("Daemon currently not reachable. Retry %d of 5...", i)))
+			}
+		}
+
 		By("trying to retrieve a value", func() {
 			cmd := exec.Command(pathToCrypta, "get", "abcd")
+			setTimeout(cmd)
 			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Eventually(crypta).Should(gexec.Exit(1))
+			Eventually(crypta).WithTimeout(3 * time.Second).Should(gexec.Exit(1))
+
+			errOutput := string(crypta.Err.Contents())
+			checkErrOutputForConnectionTimeout(errOutput)
+			checkErrOutputForRetries(errOutput)
 		})
 		By("trying to set a value", func() {
 			cmd := exec.Command(pathToCrypta, "set", "abcd", "xyz")
+			setTimeout(cmd)
 			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
-			Eventually(crypta).Should(gexec.Exit(1))
+			Eventually(crypta).WithTimeout(3 * time.Second).Should(gexec.Exit(1))
+			errOutput := string(crypta.Err.Contents())
+			checkErrOutputForConnectionTimeout(errOutput)
+			checkErrOutputForRetries(errOutput)
 		})
 	})
 
