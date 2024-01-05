@@ -1,3 +1,7 @@
+---
+hide_title: true
+sidebar_label: crypta get
+---
 ## crypta get
 
 Get cached secret value

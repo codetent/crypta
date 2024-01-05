@@ -1,0 +1,38 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+# Installation
+
+Crypta consists only of one binary without any dependencies.
+
+<Tabs
+  defaultValue="windows"
+  values={[
+    { label: 'Windows', value: 'windows', },
+    { label: 'Darwin', value: 'darwin', },
+    { label: 'Linux', value: 'linux', },
+  ]}
+>
+<TabItem value="windows">
+
+```powershell
+curl -L -o crypta.exe "https://github.com/codetent/crypta/releases/latest/download/crypta-windows-amd64.exe"
+```
+
+</TabItem>
+<TabItem value="darwin">
+
+```bash
+curl -L -o crypta "https://github.com/codetent/crypta/releases/latest/download/crypta-darwin-amd64" && sudo install -c -m 0755 crypta /usr/local/bin
+```
+
+</TabItem>
+<TabItem value="linux">
+
+```bash
+curl -L -o crypta "https://github.com/codetent/crypta/releases/latest/download/crypta-linux-amd64" && sudo install -c -m 0755 crypta /usr/local/bin
+```
+
+</TabItem>
+</Tabs>

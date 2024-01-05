@@ -4,15 +4,93 @@ name: build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
+  draft-release:
+    if: github.event_name == 'push'
+    permissions:
+      contents: write  # write permission is required to create a github release
     runs-on: ubuntu-latest
-    container: codetent/crypta-dev:e88d3dcd9dfbad063168b987a345a2fbde4b500c
+    outputs:
+      tag: ${{ steps.release-drafter.outputs.tag_name }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - run: goreleaser --clean --snapshot
+      - id: release-drafter
+        uses: release-drafter/release-drafter@v5
+        with:
+          disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-binaries:
+    needs: draft-release
+    if: always() && !failure() && !cancelled()
+    permissions:
+      contents: write  # write permission is required for uploading release artifacts
+    runs-on: ubuntu-latest
+    container:
+      image: codetent/crypta-dev:ebad54dad1f32b5a4c983181fe446a57ba706ba0
+      options: --user 1001  # use runner user
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build binaries & run tests
+        env:
+          GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
+        run: |
+          goreleaser \
+            --clean \
+            --skip=validate --skip=publish --skip=announce \
+            ${{ needs.draft-release.result == 'skipped' && '--snapshot' || '' }}
+      - name: Upload release artifacts
+        if: needs.draft-release.result != 'skipped'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload \
+            --clobber \
+            ${{ needs.draft-release.outputs.tag }} \
+            dist/crypta_*/crypta-*
+
+  build-docs:
+    runs-on: ubuntu-latest
+    container:
+      image: codetent/crypta-dev:ebad54dad1f32b5a4c983181fe446a57ba706ba0
+      options: --user 1001  # use runner user
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build documentation
+        working-directory: docs
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          mkdir -p dist
+      - name: Archive artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: docs
+          retention-days: 1
+          path: docs/build
+
+  deploy-docs:
+    if: github.event_name == 'push'
+    needs: build-docs
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: gh-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: docs
