@@ -3,6 +3,7 @@ package daemon
 import (
 	"context"
 	"testing"
+	"time"
 
 	"connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
@@ -138,6 +139,39 @@ func Test_daemonClient_GetSecret(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("daemonClient.GetSecret() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_calculateRetryTimeout(t *testing.T) {
+	tests := []struct {
+		name       string
+		maxTimeout string
+		want       time.Duration
+	}{
+		{
+			name:       "Calculates retry timeout based on default maximum timeout because the env var is not set",
+			maxTimeout: "",
+			want:       1 * time.Second,
+		},
+		{
+			name:       "Calculates retry timeout based on set maximum timeout because the env var is set",
+			maxTimeout: "5",
+			want:       1 * time.Second,
+		},
+		{
+			name:       "Allows to calculate retry timeout based on env var value, even if float value is given",
+			maxTimeout: "0.1",
+			want:       20 * time.Millisecond,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Setenv("CRYPTA_TIMEOUT", tt.maxTimeout)
+
+			if got := calculateRetryTimeout(); got != tt.want {
+				t.Errorf("calculateRetryTimeout() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
@@ -18,11 +19,31 @@ import (
 
 var (
 	ErrSecretNotExists = errors.New("secret does not exist")
-	networkError       *net.OpError
+)
+
+const (
+	defaultConnectionTimeout = 5 * time.Second
+	retries                  = 5
 )
 
 type daemonClient struct {
 	client secretv1connect.SecretServiceClient
+}
+
+func calculateRetryTimeout() time.Duration {
+	maxTimeoutStr := os.Getenv("CRYPTA_TIMEOUT")
+	maxTimeout, err := strconv.ParseFloat(maxTimeoutStr, 32)
+
+	timeout := time.Duration(maxTimeout*float64(time.Second/time.Millisecond)) * time.Millisecond
+
+	if err != nil {
+		log.Println("Using default maximum connection timeout:", defaultConnectionTimeout)
+		timeout = defaultConnectionTimeout
+	} else {
+		log.Println("Using set maximum connection timeout:", timeout)
+	}
+
+	return timeout / retries
 }
 
 func NewDaemonClient(ip string, port string) *daemonClient {
@@ -31,6 +52,17 @@ func NewDaemonClient(ip string, port string) *daemonClient {
 	// disable logging of the retries (as it is quite verbose)
 	silentLogger := log.New(io.Discard, "", 0)
 	c.Logger = silentLogger
+
+	retryTimeout := calculateRetryTimeout()
+
+	// in order to calculate a maximum timeout that the connection attempt takes, a constant wait with a constant retry
+	// timeout is used. The retry timeout is calculated based on the maximum timeout & the number of retries.
+	c.RetryMax = retries - 1 // retries start counting with 0
+	c.RetryWaitMin = retryTimeout
+	c.RetryWaitMax = retryTimeout
+	c.Backoff = func(min, max time.Duration, attemptNum int, resp *http.Response) time.Duration {
+		return max
+	}
 
 	// hook the retries in order to inform the user
 	c.RequestLogHook = func(l retryablehttp.Logger, r *http.Request, i int) {
