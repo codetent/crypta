@@ -92,7 +92,7 @@ func (c *daemonClient) SetSecret(ctx context.Context, name string, value string)
 
 func (c *daemonClient) GetSecret(ctx context.Context, name string) (string, error) {
 	res, err := c.client.GetSecret(
-		context.Background(),
+		ctx,
 		connect.NewRequest(&secretv1.GetSecretRequest{
 			Name: name,
 		}),
