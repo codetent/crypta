@@ -24,16 +24,10 @@ builds:
       - darwin
     goarch:
       - amd64
+    binary: '{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}'
 
 archives:
-  - format: tar.gz
-    # this name template makes the OS and Arch compatible with the results of `uname`.
-    name_template: >-
-      {{ .ProjectName }}_{{- title .Os }}_x86_64
-    # use zip for windows archives
-    format_overrides:
-      - goos: windows
-        format: zip
+  - format: binary
 
 changelog:
   skip: true

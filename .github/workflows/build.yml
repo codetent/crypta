@@ -55,8 +55,7 @@ jobs:
           gh release upload \
             --clobber \
             ${{ needs.draft-release.outputs.tag }} \
-            dist/crypta_*.tar.gz \
-            dist/crypta_*.zip
+            dist/crypta_*/crypta-*
 
   build-docs:
     runs-on: ubuntu-latest
