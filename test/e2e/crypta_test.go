@@ -154,11 +154,6 @@ var _ = Describe("Crypta", func() {
 	})
 
 	It("should return an error if the daemon is not running when", func() {
-		setTimeout := func(c *exec.Cmd) {
-			c.Env = os.Environ()
-			c.Env = append(c.Env, "CRYPTA_TIMEOUT=0.1")
-		}
-
 		checkErrOutputForConnectionTimeout := func(out string) {
 			Expect(out).To(ContainSubstring("Using set maximum connection timeout: 100ms"))
 		}
@@ -169,26 +164,32 @@ var _ = Describe("Crypta", func() {
 			}
 		}
 
-		By("trying to retrieve a value", func() {
-			cmd := exec.Command(pathToCrypta, "get", "abcd")
-			setTimeout(cmd)
+		startCrypta := func(args ...string) string {
+			cmd := exec.Command(pathToCrypta, args...)
+			setTestDaemonTimeout(cmd)
 			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
 
 			Eventually(crypta).WithTimeout(3 * time.Second).Should(gexec.Exit(1))
 
-			errOutput := string(crypta.Err.Contents())
+			return string(crypta.Err.Contents())
+		}
+
+		By("trying to retrieve a value", func() {
+			errOutput := startCrypta("get", "abcd")
+			Expect(errOutput).To(ContainSubstring(`Error: the daemon does not seem to be running: unavailable: POST http://127.0.0.1:35997/secret.v1.SecretService/GetSecret giving up after 5 attempt(s): Post "http://127.0.0.1:35997/secret.v1.SecretService/GetSecret": dial tcp 127.0.0.1:35997: connect: connection refused`))
+		})
+		By("trying to set a value", func() {
+			errOutput := startCrypta("set", "abcd", "xyz")
+			Expect(errOutput).To(ContainSubstring(`Error: unavailable: POST http://127.0.0.1:35997/secret.v1.SecretService/SetSecret giving up after 5 attempt(s): Post "http://127.0.0.1:35997/secret.v1.SecretService/SetSecret": dial tcp 127.0.0.1:35997: connect: connection refused`))
+		})
+		By("trying to retrieve a value with verbose mode enabled", func() {
+			errOutput := startCrypta("get", "abcd", "-v")
 			checkErrOutputForConnectionTimeout(errOutput)
 			checkErrOutputForRetries(errOutput)
 		})
-		By("trying to set a value", func() {
-			cmd := exec.Command(pathToCrypta, "set", "abcd", "xyz")
-			setTimeout(cmd)
-			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
-			Ω(err).ShouldNot(HaveOccurred())
-
-			Eventually(crypta).WithTimeout(3 * time.Second).Should(gexec.Exit(1))
-			errOutput := string(crypta.Err.Contents())
+		By("trying to set a value with verbose mode enabled", func() {
+			errOutput := startCrypta("set", "abcd", "xyz", "-v")
 			checkErrOutputForConnectionTimeout(errOutput)
 			checkErrOutputForRetries(errOutput)
 		})
