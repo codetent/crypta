@@ -249,6 +249,20 @@ var _ = Describe("Crypta", func() {
 			Expect(errStr).To(Not(BeEmpty()))
 			Expect(errStr).To(ContainSubstring("Usage:"))
 		})
+
+		It("is called with help", func() {
+			cmd := exec.Command(pathToCrypta, "help")
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Eventually(crypta).Should(gexec.Exit(0))
+
+			outStr := string(crypta.Out.Contents())
+
+			Expect(outStr).To(Not(BeEmpty()))
+			Expect(outStr).To(ContainSubstring("Usage:"))
+			Expect(crypta.Err.Contents()).To(BeEmpty())
+		})
 	})
 
 })
