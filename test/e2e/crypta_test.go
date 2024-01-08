@@ -159,8 +159,8 @@ var _ = Describe("Crypta", func() {
 		}
 
 		checkErrOutputForRetries := func(out string) {
-			for i := 1; i < 5; i++ {
-				Expect(out).To(ContainSubstring(fmt.Sprintf("Daemon currently not reachable. Retry %d of 5...", i)))
+			for i := 1; i <= 4; i++ {
+				Expect(out).To(ContainSubstring(fmt.Sprintf("Daemon currently not reachable. Retry %d of 4...", i)))
 			}
 		}
 
