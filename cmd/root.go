@@ -47,7 +47,6 @@ func Execute() {
 	cmd := NewRootCmd()
 
 	if err := cmd.Execute(); err != nil {
-		cmd.PrintErrln("Error:", err)
 		os.Exit(1)
 	}
 }
