@@ -29,8 +29,14 @@ func initDaemon(setCmdEnv func(*exec.Cmd)) {
 
 func defaultEnv(*exec.Cmd) {}
 
+func setTestDaemonTimeout(c *exec.Cmd) {
+	c.Env = os.Environ()
+	c.Env = append(c.Env, "CRYPTA_TIMEOUT=0.1")
+}
+
 func setValue(key, val string) {
 	cmd := exec.Command(pathToCrypta, "set", key, val)
+	setTestDaemonTimeout(cmd)
 	crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Ω(err).ShouldNot(HaveOccurred())
 
@@ -39,6 +45,7 @@ func setValue(key, val string) {
 
 func getValue(key string) string {
 	cmd := exec.Command(pathToCrypta, "get", key)
+	setTestDaemonTimeout(cmd)
 	crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Ω(err).ShouldNot(HaveOccurred())
 
