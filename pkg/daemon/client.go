@@ -66,7 +66,9 @@ func NewDaemonClient(ip string, port string) *daemonClient {
 
 	// hook the retries in order to inform the user
 	c.RequestLogHook = func(l retryablehttp.Logger, r *http.Request, i int) {
-		log.Printf("Daemon currently not reachable. Retry %d of %d...\n", i+1, c.RetryMax+1)
+		if i > 0 {
+			log.Printf("Daemon currently not reachable. Retry %d of %d...\n", i, c.RetryMax)
+		}
 	}
 
 	return &daemonClient{
