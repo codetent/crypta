@@ -193,6 +193,16 @@ var _ = Describe("Crypta", func() {
 			checkErrOutputForConnectionTimeout(errOutput)
 			checkErrOutputForRetries(errOutput)
 		})
+		By("trying to retrieve a value and not print the usage", func() {
+			errOutput := startCrypta("get", "abcd")
+			Expect(errOutput).To(Not(BeEmpty()))
+			Expect(errOutput).To(Not(ContainSubstring("Usage:")))
+		})
+		By("trying to set a value and not print the usage", func() {
+			errOutput := startCrypta("set", "abcd", "xyz")
+			Expect(errOutput).To(Not(BeEmpty()))
+			Expect(errOutput).To(Not(ContainSubstring("Usage:")))
+		})
 	})
 
 	Describe("An initial value set via environment variables can be retrieved", Ordered, func() {
@@ -210,4 +220,35 @@ var _ = Describe("Crypta", func() {
 			Ω(getValue(key)).Should(Equal(val + "\n"))
 		})
 	})
+
+	Describe("A usage message shall be printed if", func() {
+		It("receives a wrong flag", func() {
+			cmd := exec.Command(pathToCrypta, "get", "--unknown")
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Eventually(crypta).Should(gexec.Exit(1))
+
+			errStr := string(crypta.Err.Contents())
+
+			Expect(crypta.Out.Contents()).To(BeEmpty())
+			Expect(errStr).To(Not(BeEmpty()))
+			Expect(errStr).To(ContainSubstring("Usage:"))
+		})
+
+		It("is missing a required argument", func() {
+			cmd := exec.Command(pathToCrypta, "get")
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Eventually(crypta).Should(gexec.Exit(1))
+
+			errStr := string(crypta.Err.Contents())
+
+			Expect(crypta.Out.Contents()).To(BeEmpty())
+			Expect(errStr).To(Not(BeEmpty()))
+			Expect(errStr).To(ContainSubstring("Usage:"))
+		})
+	})
+
 })

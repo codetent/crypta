@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -24,6 +23,8 @@ func NewRootCmd() *cobra.Command {
 		Short: "",
 		Long:  ``,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			cmd.SilenceUsage = true
+
 			if !gf.verbose {
 				log.SetOutput(io.Discard)
 			}
@@ -46,7 +47,7 @@ func Execute() {
 	cmd := NewRootCmd()
 
 	if err := cmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		cmd.PrintErrln("Error:", err)
 		os.Exit(1)
 	}
 }
