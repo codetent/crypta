@@ -23,6 +23,9 @@ func NewRootCmd() *cobra.Command {
 		Short: "",
 		Long:  ``,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			// PersistentPreRun seems to be run after the FlagError functions have been called.
+			// The usage shall be printed if there is an error in the usage (e.g., flags are missing)
+			// But shall not printed if the RunE functions return errors (i.e. application errors)
 			cmd.SilenceUsage = true
 
 			if !gf.verbose {
