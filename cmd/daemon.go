@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/codetent/crypta/pkg/daemon"
+	"github.com/codetent/crypta/pkg/trace"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +26,12 @@ func NewDaemonCmd(global *globalFlags) *cobra.Command {
 }
 
 func (c *daemonCmd) Run(args []string) error {
+	shutdown, err := trace.SetupTracing()
+	if err != nil {
+		return err
+	}
+	defer shutdown(context.Background())
+
 	server := daemon.NewDaemonServer(c.global.ip, c.global.port)
 	return server.ListenAndServe()
 }
