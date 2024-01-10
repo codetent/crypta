@@ -13,7 +13,7 @@ var pathToCrypta string
 func TestCrypta(t *testing.T) {
 	BeforeSuite(func() {
 		var err error
-		pathToCrypta, err = gexec.Build("github.com/codetent/crypta", "-ldflags=-X main.version=0.0.0")
+		pathToCrypta, err = gexec.Build("github.com/codetent/crypta")
 		Ω(err).ShouldNot(HaveOccurred())
 	})
 
