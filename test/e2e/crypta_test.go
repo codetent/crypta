@@ -55,6 +55,17 @@ func getValue(key string) string {
 }
 
 var _ = Describe("Crypta", func() {
+	Describe("Version can be read if", Ordered, func() {
+		It("is called with the version flag", func() {
+			cmd := exec.Command(pathToCrypta, "--version")
+			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Eventually(crypta.Out).Should(Say("0.0.0"))
+			Eventually(crypta).Should(gexec.Exit(0))
+		})
+	})
+
 	Describe("A set value can be retrieved", Ordered, func() {
 		key := "abcd"
 		val := "xyz"

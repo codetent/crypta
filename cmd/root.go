@@ -34,6 +34,8 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 
+	cc.SetVersionTemplate("{{ .Version }}\n")
+
 	cc.PersistentFlags().StringVar(&gf.ip, "ip", "127.0.0.1", "IP to bind daemon")
 	cc.PersistentFlags().StringVar(&gf.port, "port", "35997", "Port to bind daemon")
 	cc.PersistentFlags().BoolVar(&gf.interactive, "interactive", true, "Allow user input")
