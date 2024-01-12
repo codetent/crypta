@@ -22,6 +22,7 @@ jobs:
         uses: release-drafter/release-drafter@v5
         with:
           disable-autolabeler: true
+          commitish: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -40,7 +41,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Print output tag
-        run: echo ${{ needs.draft-release.outputs.tag }}
+        env:
+          GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || 'empty' }}
+        run: echo $GORELEASER_CURRENT_TAG
       - name: Build binaries & run tests
         env:
           GORELEASER_CURRENT_TAG: ${{ needs.draft-release.outputs.tag || '' }}
