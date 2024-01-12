@@ -50,7 +50,7 @@ func AskPassword(f *os.File, w io.Writer, prompt string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println()
+	fmt.Fprintln(w)
 
 	return string(passB), nil
 }
