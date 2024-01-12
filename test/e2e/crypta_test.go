@@ -55,8 +55,8 @@ func getValue(key string) string {
 }
 
 var _ = Describe("Crypta", func() {
-	Describe("Version can be read", Ordered, func() {
-		It("calls it with the version flag", func() {
+	Describe("Version can be read if", Ordered, func() {
+		It("is called with the version flag", func() {
 			cmd := exec.Command(pathToCrypta, "--version")
 			crypta, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 			Ω(err).ShouldNot(HaveOccurred())
