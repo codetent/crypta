@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/codetent/crypta/pkg/daemon"
+	"github.com/codetent/crypta/pkg/store"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +24,11 @@ func NewDaemonCmd(global *globalFlags) *cobra.Command {
 }
 
 func (c *daemonCmd) Run(args []string) error {
-	server := daemon.NewDaemonServer(c.global.ip, c.global.port)
-	return server.ListenAndServe()
+	store := store.NewLocalSecretStore(
+		store.WithEnvPrefix("CRYPTA_SECRET_"),
+		store.WithLocalPath("/var/run/secrets/crypta"),
+	)
+
+	server := daemon.NewDaemonServer(store)
+	return server.ListenAndServe(c.global.ip, c.global.port)
 }

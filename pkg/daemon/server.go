@@ -10,23 +10,21 @@ import (
 )
 
 type daemonServer struct {
-	address string
+	store store.SecretStore
 }
 
-func NewDaemonServer(ip string, port string) *daemonServer {
+func NewDaemonServer(store store.SecretStore) *daemonServer {
 	return &daemonServer{
-		address: fmt.Sprintf("%s:%s", ip, port),
+		store: store,
 	}
 }
 
-func (s *daemonServer) ListenAndServe() error {
-	store := store.NewLocalSecretStore(
-		store.WithEnvPrefix("CRYPTA_SECRET_"),
-		store.WithLocalPath("/var/run/secrets/crypta"),
-	)
-
+func (s *daemonServer) ListenAndServe(ip string, port string) error {
 	mux := http.NewServeMux()
-	mux.Handle(NewSecretServiceHandler(store))
+	mux.Handle(NewSecretServiceHandler(s.store))
 
-	return http.ListenAndServe(s.address, h2c.NewHandler(mux, &http2.Server{}))
+	return http.ListenAndServe(
+		fmt.Sprintf("%s:%s", ip, port),
+		h2c.NewHandler(mux, &http2.Server{}),
+	)
 }
