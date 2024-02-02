@@ -7,14 +7,15 @@ import (
 	connect "connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
 	"github.com/codetent/crypta/gen/secret/v1/secretv1connect"
+	"github.com/codetent/crypta/pkg/store"
 )
 
 type secretServiceServer struct {
 	secretv1connect.UnimplementedSecretServiceHandler
-	store SecretStore
+	store store.SecretStore
 }
 
-func NewSecretServiceHandler(store SecretStore) (string, http.Handler) {
+func NewSecretServiceHandler(store store.SecretStore) (string, http.Handler) {
 	return secretv1connect.NewSecretServiceHandler(&secretServiceServer{
 		store: store,
 	})

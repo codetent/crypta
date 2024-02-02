@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/codetent/crypta/pkg/store"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -19,9 +20,10 @@ func NewDaemonServer(ip string, port string) *daemonServer {
 }
 
 func (s *daemonServer) ListenAndServe() error {
-	store := NewLocalSecretStore()
-
-	PopulateStore(store)
+	store := store.NewLocalSecretStore(
+		store.WithEnvPrefix("CRYPTA_SECRET_"),
+		store.WithLocalPath("/var/run/secrets/crypta"),
+	)
 
 	mux := http.NewServeMux()
 	mux.Handle(NewSecretServiceHandler(store))
