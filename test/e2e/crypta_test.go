@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -221,13 +222,46 @@ var _ = Describe("Crypta", func() {
 		val := "xyz"
 
 		initDaemon(func(c *exec.Cmd) {
-			c.Env = os.Environ()
+			c.Args = append(c.Args, "--env", "CRYPTA_SECRET_")
 
+			c.Env = os.Environ()
 			// set secret as environment variable
 			c.Env = append(c.Env, fmt.Sprintf("CRYPTA_SECRET_%s=%s", key, val))
 		})
 
 		It("retrieves the initial value set via the environment variable", func() {
+			Ω(getValue(key)).Should(Equal(val + "\n"))
+		})
+	})
+
+	Describe("An initial value set via secret file can be retrieved", Ordered, func() {
+		key := "abcd"
+		val := "xyz"
+		var dir string
+
+		BeforeAll(func() {
+			var err error
+			dir, err = os.MkdirTemp("", "crypta-test-path")
+			Ω(err).ShouldNot(HaveOccurred())
+			DeferCleanup(func() {
+				os.RemoveAll(dir)
+			})
+
+			f, err := os.Create(filepath.Join(dir, key))
+			Ω(err).ShouldNot(HaveOccurred())
+			DeferCleanup(func() {
+				f.Close()
+			})
+
+			err = os.WriteFile(filepath.Join(dir, key), []byte(val), 0666)
+			Ω(err).ShouldNot(HaveOccurred())
+		})
+
+		initDaemon(func(c *exec.Cmd) {
+			c.Args = append(c.Args, "--path", dir)
+		})
+
+		It("retrieves the initial value set via secret file", func() {
 			Ω(getValue(key)).Should(Equal(val + "\n"))
 		})
 	})

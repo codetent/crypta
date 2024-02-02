@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -96,8 +95,6 @@ func TestWithLocalPath(t *testing.T) {
 				panic(err)
 			}
 			defer os.RemoveAll(dir)
-
-			fmt.Println(dir)
 
 			for name, val := range tt.files {
 				f, err := os.Create(filepath.Join(dir, name))
