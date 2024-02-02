@@ -5,7 +5,7 @@ packages:
     interfaces:
       SecretServiceClient:
         config:
-  github.com/codetent/crypta/pkg/daemon:
+  github.com/codetent/crypta/pkg/store:
     config:
     interfaces:
       SecretStore:

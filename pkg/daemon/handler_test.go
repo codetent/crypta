@@ -7,7 +7,7 @@ import (
 
 	connect "connectrpc.com/connect"
 	secretv1 "github.com/codetent/crypta/gen/secret/v1"
-	m_daemon "github.com/codetent/crypta/mocks/github.com/codetent/crypta/pkg/daemon"
+	m_store "github.com/codetent/crypta/mocks/github.com/codetent/crypta/pkg/store"
 )
 
 func Test_secretServiceServer_SetSecret(t *testing.T) {
@@ -19,7 +19,7 @@ func Test_secretServiceServer_SetSecret(t *testing.T) {
 		name      string
 		args      args
 		want      *connect.Response[secretv1.SetSecretResponse]
-		wantCalls func(m *m_daemon.MockSecretStore)
+		wantCalls func(m *m_store.MockSecretStore)
 		wantErr   bool
 	}{
 		{
@@ -36,7 +36,7 @@ func Test_secretServiceServer_SetSecret(t *testing.T) {
 			want: &connect.Response[secretv1.SetSecretResponse]{
 				Msg: &secretv1.SetSecretResponse{},
 			},
-			wantCalls: func(m *m_daemon.MockSecretStore) {
+			wantCalls: func(m *m_store.MockSecretStore) {
 				m.EXPECT().SetSecret("foo", "bar").Return()
 			},
 			wantErr: false,
@@ -44,7 +44,7 @@ func Test_secretServiceServer_SetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := m_daemon.NewMockSecretStore(t)
+			m := m_store.NewMockSecretStore(t)
 			s := &secretServiceServer{
 				store: m,
 			}
@@ -72,7 +72,7 @@ func Test_secretServiceServer_GetSecret(t *testing.T) {
 		name      string
 		args      args
 		want      *connect.Response[secretv1.GetSecretResponse]
-		wantCalls func(m *m_daemon.MockSecretStore)
+		wantCalls func(m *m_store.MockSecretStore)
 		wantErr   bool
 	}{
 		{
@@ -91,7 +91,7 @@ func Test_secretServiceServer_GetSecret(t *testing.T) {
 					Exists: true,
 				},
 			},
-			wantCalls: func(m *m_daemon.MockSecretStore) {
+			wantCalls: func(m *m_store.MockSecretStore) {
 				m.EXPECT().GetSecret("foo").Return("bar", true)
 			},
 			wantErr: false,
@@ -112,7 +112,7 @@ func Test_secretServiceServer_GetSecret(t *testing.T) {
 					Exists: false,
 				},
 			},
-			wantCalls: func(m *m_daemon.MockSecretStore) {
+			wantCalls: func(m *m_store.MockSecretStore) {
 				m.EXPECT().GetSecret("foo").Return("", false)
 			},
 			wantErr: false,
@@ -120,7 +120,7 @@ func Test_secretServiceServer_GetSecret(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := m_daemon.NewMockSecretStore(t)
+			m := m_store.NewMockSecretStore(t)
 			s := &secretServiceServer{
 				store: m,
 			}
